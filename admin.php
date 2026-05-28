@@ -1,3 +1,10 @@
+<?php
+session_start();
+if (empty($_SESSION['admin_logged_in'])) {
+    header('Location: login.php');
+    exit;
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -373,6 +380,7 @@
       </div>
       <div class="header-actions">
         <a class="btn btn-ghost" href="index.php">← Public Site</a>
+        <a class="btn btn-ghost" href="api/logout.php">Sign Out</a>
         <button class="btn btn-danger" id="clearAllBtn" type="button">🗑 Clear All Data</button>
       </div>
     </div>
