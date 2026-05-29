@@ -258,6 +258,8 @@ if (empty($_SESSION['admin_logged_in'])) {
   </main>
 
   <script>
+    const CSRF_TOKEN = '<?= htmlspecialchars($_SESSION['csrf_token'] ?? '') ?>';
+
     const els = {
       total:    document.getElementById('totalApplications'),
       amount:   document.getElementById('totalAmount'),
@@ -363,6 +365,7 @@ if (empty($_SESSION['admin_logged_in'])) {
       const data = new FormData();
       data.append('id', id);
       data.append('status', status);
+      data.append('csrf_token', CSRF_TOKEN);
       try {
         const res    = await fetch('api/update_status.php', { method: 'POST', body: data });
         const result = await res.json();
@@ -407,7 +410,9 @@ if (empty($_SESSION['admin_logged_in'])) {
     els.clearBtn.addEventListener('click', async () => {
       if (!window.confirm('This will permanently remove all application records. Continue?')) return;
       try {
-        const res  = await fetch('api/clear_applications.php', { method: 'POST' });
+        const clearData = new FormData();
+        clearData.append('csrf_token', CSRF_TOKEN);
+        const res  = await fetch('api/clear_applications.php', { method: 'POST', body: clearData });
         const data = await res.json();
         if (!res.ok || !data.success) throw new Error(data.message || 'Failed to clear');
         await loadData();

@@ -123,6 +123,8 @@ if (empty($_SESSION['admin_logged_in'])) {
   </main>
 
   <script>
+    const CSRF_TOKEN = '<?= htmlspecialchars($_SESSION['csrf_token'] ?? '') ?>';
+
     const form     = document.getElementById('changePasswordForm');
     const alertBox = document.getElementById('alertBox');
 
@@ -135,6 +137,7 @@ if (empty($_SESSION['admin_logged_in'])) {
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       const data = new FormData(form);
+      data.append('csrf_token', CSRF_TOKEN);
       try {
         const res    = await fetch('api/change_password.php', { method: 'POST', body: data });
         const result = await res.json();

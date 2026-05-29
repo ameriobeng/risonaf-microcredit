@@ -25,6 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         session_regenerate_id(true);
         $_SESSION['admin_logged_in'] = true;
         $_SESSION['admin_user']      = $username;
+        $_SESSION['csrf_token']      = bin2hex(random_bytes(32));
         header('Location: admin.php');
         exit;
     }
