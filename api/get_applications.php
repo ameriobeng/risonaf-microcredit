@@ -23,6 +23,8 @@ try {
             phone,
             email,
             location,
+            id_type   AS idType,
+            id_number AS idNumber,
             loan_type AS loanType,
             amount,
             purpose,

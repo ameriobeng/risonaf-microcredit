@@ -231,7 +231,9 @@ if (empty($_SESSION['admin_logged_in'])) {
                 <th>Phone</th>
                 <th>Email</th>
                 <th>Location</th>
-                <th>Type</th>
+                <th>ID Type</th>
+                <th>ID Number</th>
+                <th>Loan Type</th>
                 <th>Amount (GHS)</th>
                 <th>Purpose</th>
                 <th>Status</th>
@@ -339,6 +341,8 @@ if (empty($_SESSION['admin_logged_in'])) {
           <td>${escapeHTML(item.phone)}</td>
           <td>${escapeHTML(item.email)}</td>
           <td>${escapeHTML(item.location)}</td>
+          <td>${escapeHTML(item.idType)}</td>
+          <td>${escapeHTML(item.idNumber)}</td>
           <td>${loanBadge(item.loanType)}</td>
           <td class="amount-cell">${fmt(Number(item.amount || 0))}</td>
           <td>${escapeHTML(item.purpose)}</td>

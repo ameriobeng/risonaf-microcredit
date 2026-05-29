@@ -19,6 +19,8 @@ try {
             phone,
             email,
             location,
+            id_type,
+            id_number,
             loan_type,
             amount,
             purpose,
@@ -34,7 +36,7 @@ try {
     fputs($out, "\xEF\xBB\xBF");
 
     // Header row
-    fputcsv($out, ['ID', 'Full Name', 'Phone', 'Email', 'Location', 'Loan Type', 'Amount (GHS)', 'Purpose', 'Status', 'Submitted At']);
+    fputcsv($out, ['ID', 'Full Name', 'Phone', 'Email', 'Location', 'ID Type', 'ID Number', 'Loan Type', 'Amount (GHS)', 'Purpose', 'Status', 'Submitted At']);
 
     while ($row = $stmt->fetch()) {
         fputcsv($out, [
@@ -43,6 +45,8 @@ try {
             $row['phone'],
             $row['email'],
             $row['location'],
+            $row['id_type'],
+            $row['id_number'],
             $row['loan_type'],
             $row['amount'],
             $row['purpose'],

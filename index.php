@@ -623,6 +623,23 @@
 
             <div class="row">
               <div class="field">
+                <label for="idType">ID Card Type</label>
+                <select id="idType" name="idType" required>
+                  <option value="">-- Select ID type --</option>
+                  <option>Ghana Card</option>
+                  <option>Passport</option>
+                  <option>Driver's License</option>
+                  <option>Voter's ID</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="idNumber">ID Card Number</label>
+                <input id="idNumber" name="idNumber" placeholder="e.g. GHA-000000000-0" required />
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="field">
                 <label for="loanType">Loan Type</label>
                 <select id="loanType" name="loanType" required>
                   <option value="">-- Select loan type --</option>
