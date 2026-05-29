@@ -77,7 +77,7 @@ try {
 
     // Email notification (fire-and-forget — failure doesn't affect the response)
     if (NOTIFY_EMAIL !== '') {
-        $emailBody = "New loan application received on Risonaf Microcredit Ghana.\n\n"
+        $emailBody = "New loan application received on Risobaf Loans Ghana.\n\n"
             . "Name:      {$fullName}\n"
             . "Phone:     {$phone}\n"
             . "Email:     {$email}\n"
