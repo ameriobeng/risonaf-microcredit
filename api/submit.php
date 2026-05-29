@@ -4,6 +4,7 @@ declare(strict_types=1);
 header('Content-Type: application/json');
 
 require_once __DIR__ . '/../config.php';
+require_once __DIR__ . '/../helpers/mailer.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
@@ -11,27 +12,32 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-$fullName = trim((string)($_POST['fullName'] ?? ''));
-$phone = trim((string)($_POST['phone'] ?? ''));
-$email = trim((string)($_POST['email'] ?? ''));
-$location = trim((string)($_POST['location'] ?? ''));
-$loanType = trim((string)($_POST['loanType'] ?? ''));
-$amountRaw = trim((string)($_POST['amount'] ?? ''));
-$purpose = trim((string)($_POST['purpose'] ?? ''));
+$fullName  = trim((string)($_POST['fullName']  ?? ''));
+$phone     = trim((string)($_POST['phone']     ?? ''));
+$email     = trim((string)($_POST['email']     ?? ''));
+$location  = trim((string)($_POST['location']  ?? ''));
+$idType    = trim((string)($_POST['idType']    ?? ''));
+$idNumber  = trim((string)($_POST['idNumber']  ?? ''));
+$loanType  = trim((string)($_POST['loanType']  ?? ''));
+$amountRaw = trim((string)($_POST['amount']    ?? ''));
+$purpose   = trim((string)($_POST['purpose']   ?? ''));
 
 $allowedLoanTypes = ['Personal Loan', 'Business Loan', 'Group Loan'];
+$allowedIdTypes   = ['Ghana Card', 'Passport', "Driver's License", "Voter's ID"];
 
 if (
-    $fullName === '' ||
-    $phone === '' ||
-    $email === '' ||
-    $location === '' ||
-    $loanType === '' ||
-    $amountRaw === '' ||
-    $purpose === ''
+    $fullName === '' || $phone    === '' || $email   === '' ||
+    $location === '' || $idType   === '' || $idNumber === '' ||
+    $loanType === '' || $amountRaw === '' || $purpose === ''
 ) {
     http_response_code(422);
     echo json_encode(['success' => false, 'message' => 'All fields are required']);
+    exit;
+}
+
+if (!in_array($idType, $allowedIdTypes, true)) {
+    http_response_code(422);
+    echo json_encode(['success' => false, 'message' => 'Invalid ID card type']);
     exit;
 }
 
@@ -57,25 +63,45 @@ if ($amount <= 0) {
 try {
     $pdo = getPDO();
     $stmt = $pdo->prepare(
-        'INSERT INTO loan_applications 
-         (full_name, phone, email, location, loan_type, amount, purpose) 
-         VALUES (:full_name, :phone, :email, :location, :loan_type, :amount, :purpose)'
+        'INSERT INTO loan_applications
+         (full_name, phone, email, location, id_type, id_number, loan_type, amount, purpose)
+         VALUES (:full_name, :phone, :email, :location, :id_type, :id_number, :loan_type, :amount, :purpose)'
     );
 
     $stmt->execute([
         ':full_name' => $fullName,
-        ':phone' => $phone,
-        ':email' => $email,
-        ':location' => $location,
+        ':phone'     => $phone,
+        ':email'     => $email,
+        ':location'  => $location,
+        ':id_type'   => $idType,
+        ':id_number' => $idNumber,
         ':loan_type' => $loanType,
-        ':amount' => $amount,
-        ':purpose' => $purpose,
+        ':amount'    => $amount,
+        ':purpose'   => $purpose,
     ]);
+
+    $newId = (int)$pdo->lastInsertId();
+
+    // Email notification (fire-and-forget — failure doesn't affect the response)
+    if (NOTIFY_EMAIL !== '') {
+        $emailBody = "New loan application received on Risobaf Loans Ghana.\n\n"
+            . "Name:      {$fullName}\n"
+            . "Phone:     {$phone}\n"
+            . "Email:     {$email}\n"
+            . "Location:  {$location}\n"
+            . "ID Type:   {$idType}\n"
+            . "ID Number: {$idNumber}\n"
+            . "Loan Type: {$loanType}\n"
+            . "Amount:    GHS {$amount}\n"
+            . "Purpose:   {$purpose}\n\n"
+            . "View all applications in the admin dashboard.";
+        sendMail(NOTIFY_EMAIL, "New Loan Application #{$newId} — {$fullName}", $emailBody);
+    }
 
     echo json_encode([
         'success' => true,
         'message' => 'Application submitted successfully',
-        'id' => (int)$pdo->lastInsertId(),
+        'id'      => $newId,
     ]);
 } catch (Throwable $e) {
     http_response_code(500);

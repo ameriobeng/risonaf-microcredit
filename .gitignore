@@ -9,6 +9,7 @@
 # Local config with real credentials (never commit this)
 config.php
 generate_hash.php
+run_migration.php
 
 # Logs
 *.log

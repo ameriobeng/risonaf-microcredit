@@ -10,10 +10,14 @@ CREATE TABLE IF NOT EXISTS loan_applications (
   phone VARCHAR(40) NOT NULL,
   email VARCHAR(150) NOT NULL,
   location VARCHAR(150) NOT NULL,
+  id_type   VARCHAR(50)  NOT NULL,
+  id_number VARCHAR(100) NOT NULL,
   loan_type ENUM('Personal Loan', 'Business Loan', 'Group Loan') NOT NULL,
   amount DECIMAL(12,2) NOT NULL,
   purpose TEXT NOT NULL,
+  status ENUM('Pending','Approved','Rejected') NOT NULL DEFAULT 'Pending',
   submitted_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   INDEX idx_loan_type (loan_type),
-  INDEX idx_submitted_at (submitted_at)
+  INDEX idx_submitted_at (submitted_at),
+  INDEX idx_status (status)
 );

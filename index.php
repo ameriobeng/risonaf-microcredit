@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Risonaf Microcredit Ghana | Smart Financial Support</title>
+  <title>Risobaf Loans Ghana | Smart Financial Support</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
@@ -512,7 +512,7 @@
     <div class="container nav">
       <div class="brand">
         <div class="brand-icon">🏦</div>
-        Risonaf Microcredit
+        Risobaf Loans
       </div>
       <nav class="links">
         <a href="#home">Home</a>
@@ -623,6 +623,23 @@
 
             <div class="row">
               <div class="field">
+                <label for="idType">ID Card Type</label>
+                <select id="idType" name="idType" required>
+                  <option value="">-- Select ID type --</option>
+                  <option>Ghana Card</option>
+                  <option>Passport</option>
+                  <option>Driver's License</option>
+                  <option>Voter's ID</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="idNumber">ID Card Number</label>
+                <input id="idNumber" name="idNumber" placeholder="e.g. GHA-000000000-0" required />
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="field">
                 <label for="loanType">Loan Type</label>
                 <select id="loanType" name="loanType" required>
                   <option value="">-- Select loan type --</option>
@@ -659,9 +676,9 @@
     <section id="about">
       <div class="container">
         <div class="about-card">
-          <h2>About <span>Risonaf Microcredit</span></h2>
+          <h2>About <span>Risobaf Loans</span></h2>
           <p>
-            Risonaf Microcredit Ghana is committed to improving financial inclusion by providing accessible
+            Risobaf Loans Ghana is committed to improving financial inclusion by providing accessible
             and responsible micro-loan solutions across Ghana.
           </p>
           <p>
@@ -676,7 +693,7 @@
 
   <footer>
     <div class="container">
-      <span>© 2026 Risonaf Microcredit Ghana. All rights reserved.</span>
+      <span>© 2026 Risobaf Loans Ghana. All rights reserved.</span>
     </div>
   </footer>
 

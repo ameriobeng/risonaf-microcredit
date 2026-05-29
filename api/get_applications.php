@@ -23,9 +23,12 @@ try {
             phone,
             email,
             location,
+            id_type   AS idType,
+            id_number AS idNumber,
             loan_type AS loanType,
             amount,
             purpose,
+            status,
             DATE_FORMAT(submitted_at, "%Y-%m-%d %H:%i:%s") AS submittedAt
          FROM loan_applications
          ORDER BY submitted_at DESC, id DESC'

@@ -1,4 +1,4 @@
-# Risonaf Microcredit Ghana (PHP + MySQL)
+# Risobaf Loans Ghana (PHP + MySQL)
 
 This project has been migrated to **PHP + MySQL**.
 
