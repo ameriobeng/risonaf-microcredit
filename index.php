@@ -647,7 +647,7 @@
           </form>
 
           <div class="submissions-section">
-            <h3>Recent Applications</h3>
+            <h3>Applications Received</h3>
             <div class="submissions-list" id="submissionsList">
               <p style="color:var(--muted);font-size:.9rem">Loading…</p>
             </div>
@@ -705,36 +705,17 @@
         .replaceAll("'", "&#039;");
     }
 
-    async function fetchApplications() {
-      const res = await fetch("api/get_applications.php", { method: "GET" });
-      return res.json();
-    }
-
     async function renderSubmissions() {
       submissionsList.innerHTML = '<p style="color:var(--muted);font-size:.9rem">Loading…</p>';
       try {
-        const data = await fetchApplications();
-        const items = Array.isArray(data.applications) ? data.applications : [];
-
-        if (!items.length) {
-          submissionsList.innerHTML = '<p style="color:var(--muted);font-size:.9rem">No submissions yet.</p>';
-          return;
-        }
-
-        submissionsList.innerHTML = items.slice(0, 20).map(item => `
-          <div class="submission-item">
-            <strong>${escapeHTML(item.fullName)}</strong>
-            <span class="loan-badge">${escapeHTML(item.loanType)}</span>
-            — GHS ${escapeHTML(item.amount)}
-            <div class="sub-meta">
-              📍 ${escapeHTML(item.location)} &nbsp;·&nbsp; 📞 ${escapeHTML(item.phone)}<br/>
-              📝 ${escapeHTML(item.purpose)}<br/>
-              🕐 ${escapeHTML(item.submittedAt)}
-            </div>
-          </div>
-        `).join("");
+        const res = await fetch("api/submit_count.php", { method: "GET" });
+        const data = await res.json();
+        const count = data.count ?? 0;
+        submissionsList.innerHTML = count > 0
+          ? `<div class="submission-item"><strong>${count}</strong> application${count !== 1 ? 's' : ''} received. Our team will be in touch shortly.</div>`
+          : '<p style="color:var(--muted);font-size:.9rem">No submissions yet. Be the first to apply!</p>';
       } catch {
-        submissionsList.innerHTML = '<p style="color:var(--muted);font-size:.9rem">Unable to load submissions.</p>';
+        submissionsList.innerHTML = '<p style="color:var(--muted);font-size:.9rem">Unable to load status.</p>';
       }
     }
 

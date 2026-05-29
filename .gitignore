@@ -6,6 +6,10 @@
 .env.local
 .env.*.local
 
+# Local config with real credentials (never commit this)
+config.php
+generate_hash.php
+
 # Logs
 *.log
 /logs/
