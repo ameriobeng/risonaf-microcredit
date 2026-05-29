@@ -4,6 +4,7 @@ declare(strict_types=1);
 header('Content-Type: application/json');
 
 require_once __DIR__ . '/../config.php';
+require_once __DIR__ . '/../helpers/mailer.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
@@ -72,10 +73,26 @@ try {
         ':purpose' => $purpose,
     ]);
 
+    $newId = (int)$pdo->lastInsertId();
+
+    // Email notification (fire-and-forget — failure doesn't affect the response)
+    if (NOTIFY_EMAIL !== '') {
+        $emailBody = "New loan application received on Risonaf Microcredit Ghana.\n\n"
+            . "Name:      {$fullName}\n"
+            . "Phone:     {$phone}\n"
+            . "Email:     {$email}\n"
+            . "Location:  {$location}\n"
+            . "Loan Type: {$loanType}\n"
+            . "Amount:    GHS {$amount}\n"
+            . "Purpose:   {$purpose}\n\n"
+            . "View all applications in the admin dashboard.";
+        sendMail(NOTIFY_EMAIL, "New Loan Application #{$newId} — {$fullName}", $emailBody);
+    }
+
     echo json_encode([
         'success' => true,
         'message' => 'Application submitted successfully',
-        'id' => (int)$pdo->lastInsertId(),
+        'id'      => $newId,
     ]);
 } catch (Throwable $e) {
     http_response_code(500);

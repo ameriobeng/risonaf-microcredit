@@ -23,6 +23,19 @@ const DB_USER = 'root';
 const DB_PASS = '';
 
 /**
+ * Email notification settings.
+ * Set NOTIFY_EMAIL to receive an alert on new loan submissions.
+ * Leave SMTP_HOST empty to use PHP's built-in mail() function.
+ */
+const NOTIFY_EMAIL   = '';        // e.g. admin@risonaf.com
+const SMTP_HOST      = '';        // e.g. smtp.gmail.com
+const SMTP_PORT      = 587;
+const SMTP_USER      = '';
+const SMTP_PASS      = '';
+const SMTP_FROM      = '';
+const SMTP_FROM_NAME = 'Risonaf Microcredit Ghana';
+
+/**
  * Returns a PDO instance for MySQL with safe defaults.
  */
 function getPDO(): PDO
