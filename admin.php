@@ -10,7 +10,7 @@ if (empty($_SESSION['admin_logged_in'])) {
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Admin Dashboard | Risobaf Loans Ghana</title>
+  <title>Admin Dashboard | Risonaf Loans Ghana</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
@@ -143,7 +143,7 @@ if (empty($_SESSION['admin_logged_in'])) {
     <div class="container header-row">
       <div class="brand">
         <div class="brand-icon">🏦</div>
-        Risobaf Loans
+        Risonaf Loans
         <span class="admin-tag">Admin</span>
       </div>
       <div class="header-actions">
@@ -258,6 +258,8 @@ if (empty($_SESSION['admin_logged_in'])) {
   </main>
 
   <script>
+    const CSRF_TOKEN = '<?= htmlspecialchars($_SESSION['csrf_token'] ?? '') ?>';
+
     const els = {
       total:    document.getElementById('totalApplications'),
       amount:   document.getElementById('totalAmount'),
@@ -363,6 +365,7 @@ if (empty($_SESSION['admin_logged_in'])) {
       const data = new FormData();
       data.append('id', id);
       data.append('status', status);
+      data.append('csrf_token', CSRF_TOKEN);
       try {
         const res    = await fetch('api/update_status.php', { method: 'POST', body: data });
         const result = await res.json();
@@ -407,7 +410,9 @@ if (empty($_SESSION['admin_logged_in'])) {
     els.clearBtn.addEventListener('click', async () => {
       if (!window.confirm('This will permanently remove all application records. Continue?')) return;
       try {
-        const res  = await fetch('api/clear_applications.php', { method: 'POST' });
+        const clearData = new FormData();
+        clearData.append('csrf_token', CSRF_TOKEN);
+        const res  = await fetch('api/clear_applications.php', { method: 'POST', body: clearData });
         const data = await res.json();
         if (!res.ok || !data.success) throw new Error(data.message || 'Failed to clear');
         await loadData();

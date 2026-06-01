@@ -11,6 +11,10 @@ function sendMail(string $to, string $subject, string $body): bool
         return false; // Notifications disabled
     }
 
+    // Strip newlines from header fields to prevent SMTP header injection
+    $subject = str_replace(["\r", "\n"], ' ', $subject);
+    $to      = str_replace(["\r", "\n"], '',  $to);
+
     // Use PHP mail() if no SMTP host configured
     if (SMTP_HOST === '') {
         $headers  = "From: " . SMTP_FROM_NAME . " <" . (SMTP_FROM ?: 'noreply@localhost') . ">\r\n";

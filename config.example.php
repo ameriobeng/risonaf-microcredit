@@ -33,7 +33,7 @@ const SMTP_PORT      = 587;
 const SMTP_USER      = '';
 const SMTP_PASS      = '';
 const SMTP_FROM      = '';
-const SMTP_FROM_NAME = 'Risobaf Loans Ghana';
+const SMTP_FROM_NAME = 'Risonaf Loans Ghana';
 
 /**
  * Returns a PDO instance for MySQL with safe defaults.
