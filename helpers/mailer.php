@@ -7,8 +7,8 @@ declare(strict_types=1);
  */
 function sendMail(string $to, string $subject, string $body): bool
 {
-    if (NOTIFY_EMAIL === '' || $to === '') {
-        return false; // Notifications disabled
+    if ($to === '') {
+        return false;
     }
 
     // Strip newlines from header fields to prevent SMTP header injection
