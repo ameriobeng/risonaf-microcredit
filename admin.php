@@ -14,6 +14,7 @@ if (empty($_SESSION['admin_logged_in'])) {
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
     :root {
       --primary:       #16a34a;
@@ -141,6 +142,16 @@ if (empty($_SESSION['admin_logged_in'])) {
     .btn-export { background: white; color: var(--primary); border: 1.5px solid var(--primary); font-size: .85rem; padding: .55rem .9rem; border-radius: 9px; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: .4rem; transition: all .15s; }
     .btn-export:hover { background: var(--primary-light); }
 
+    /* ── NOTES BTN / CELL ── */
+    .btn-notes { background: #f0fdf4; color: #15803d; font-family: inherit; font-size: .75rem; font-weight: 700; padding: .3rem .65rem; border-radius: 7px; border: 1px solid #bbf7d0; cursor: pointer; transition: all .15s; white-space: nowrap; }
+    .btn-notes:hover { background: #dcfce7; }
+    .btn-notes.has-note { background: #fef9c3; color: #854d0e; border-color: #fde047; }
+
+    /* ── CHART PANEL ── */
+    .chart-panel { background: white; border: 1px solid var(--border); border-radius: 16px; padding: 1.3rem; box-shadow: 0 2px 12px rgba(0,0,0,.04); margin-bottom: 1.2rem; }
+    .chart-header { font-size: .95rem; font-weight: 700; color: var(--dark); margin-bottom: 1rem; }
+    .chart-wrap { position: relative; height: 200px; }
+
     /* ── REPAYMENT BTN ── */
     .btn-repay { background: #dbeafe; color: #1d4ed8; font-family: inherit; font-size: .75rem; font-weight: 700; padding: .3rem .65rem; border-radius: 7px; border: none; cursor: pointer; transition: all .15s; white-space: nowrap; }
     .btn-repay:hover { background: #bfdbfe; }
@@ -244,6 +255,11 @@ if (empty($_SESSION['admin_logged_in'])) {
         </div>
       </div>
 
+      <div class="chart-panel">
+        <div class="chart-header">📊 Applications — Last 6 Months</div>
+        <div class="chart-wrap"><canvas id="appChart"></canvas></div>
+      </div>
+
       <div class="panel">
         <div class="panel-header">
           <div>
@@ -289,6 +305,7 @@ if (empty($_SESSION['admin_logged_in'])) {
                 <th>Purpose</th>
                 <th>Status</th>
                 <th>Actions</th>
+                <th>Notes</th>
                 <th>Submitted</th>
               </tr>
             </thead>
@@ -338,6 +355,30 @@ if (empty($_SESSION['admin_logged_in'])) {
               <button class="btn-rep-submit" id="repSubmitBtn">Save Payment</button>
               <div class="rep-status" id="repStatus"></div>
             </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── NOTES MODAL ──────────────────────────────────────────────────── -->
+  <div class="modal-overlay" id="notesModal" role="dialog" aria-modal="true" aria-labelledby="notesModalTitle">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="notesModalTitle">Internal Notes</h3>
+        <button class="modal-close" id="notesClose" aria-label="Close">✕</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size:.85rem;color:var(--muted);margin-bottom:.5rem">Notes are for internal use only and are not visible to the applicant.</p>
+        <input type="hidden" id="notesLoanId" />
+        <div class="rep-form">
+          <div>
+            <label for="notesText">Notes</label>
+            <textarea id="notesText" rows="5" placeholder="Add internal notes about this application…"></textarea>
+          </div>
+          <div style="display:flex;align-items:center;gap:.8rem;flex-wrap:wrap;">
+            <button class="btn-rep-submit" id="notesSaveBtn">Save Notes</button>
+            <div class="rep-status" id="notesStatus"></div>
           </div>
         </div>
       </div>
@@ -397,6 +438,7 @@ if (empty($_SESSION['admin_logged_in'])) {
     let allApplications = [];
     let currentPage     = 1;
     let filteredCache   = [];
+    let appChart        = null;
 
     // ── Helpers ───────────────────────────────────────────────────────────────
     function fmt(v) { return new Intl.NumberFormat('en-GH').format(v); }
@@ -505,6 +547,13 @@ if (empty($_SESSION['admin_logged_in'])) {
               <button class="btn-repay"   onclick="openRepayModal(${item.id})">💳 Repayments</button>
             </div>
           </td>
+          <td>
+            <button class="btn-notes${item.notes ? ' has-note' : ''}"
+                    onclick="openNotesModal(${item.id})"
+                    title="${item.notes ? escapeHTML(item.notes.substring(0,80)) : 'Add note'}">
+              ${item.notes ? '📝' : '➕'} Notes
+            </button>
+          </td>
           <td class="date-cell">${escapeHTML(item.submittedAt)}</td>
         </tr>
       `).join('');
@@ -541,6 +590,36 @@ if (empty($_SESSION['admin_logged_in'])) {
       }
     }
 
+    // ── Chart ─────────────────────────────────────────────────────────────────
+    function renderChart(chartData) {
+      const labels   = chartData.map(r => r.month);
+      const totals   = chartData.map(r => Number(r.total));
+      const approved = chartData.map(r => Number(r.approved));
+      const rejected = chartData.map(r => Number(r.rejected));
+
+      if (appChart) appChart.destroy();
+      const ctx = document.getElementById('appChart').getContext('2d');
+      appChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels,
+          datasets: [
+            { label: 'Total',    data: totals,   backgroundColor: 'rgba(100,116,139,.25)', borderColor: '#64748b', borderWidth: 1.5, borderRadius: 4 },
+            { label: 'Approved', data: approved, backgroundColor: 'rgba(22,163,74,.3)',   borderColor: '#16a34a', borderWidth: 1.5, borderRadius: 4 },
+            { label: 'Rejected', data: rejected, backgroundColor: 'rgba(220,38,38,.2)',   borderColor: '#dc2626', borderWidth: 1.5, borderRadius: 4 },
+          ],
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { labels: { font: { family: 'Inter', size: 12 }, boxWidth: 12 } } },
+          scales: {
+            x: { grid: { display: false }, ticks: { font: { family: 'Inter', size: 11 } } },
+            y: { beginAtZero: true, ticks: { precision: 0, font: { family: 'Inter', size: 11 } } },
+          },
+        },
+      });
+    }
+
     // ── Load data ─────────────────────────────────────────────────────────────
     async function loadData() {
       const response = await fetch('api/get_applications.php');
@@ -555,6 +634,7 @@ if (empty($_SESSION['admin_logged_in'])) {
 
       renderStats(stats);
       renderFiltered();
+      if (Array.isArray(data.chart) && data.chart.length) renderChart(data.chart);
     }
 
     els.search.addEventListener('input', renderFiltered);
@@ -690,6 +770,56 @@ if (empty($_SESSION['admin_logged_in'])) {
         repStatus.className = 'rep-status err';
       } finally {
         repSubmitBtn.disabled = false;
+      }
+    });
+
+    // ── Notes modal ──────────────────────────────────────────────────────────
+    const notesModal   = document.getElementById('notesModal');
+    const notesLoanId  = document.getElementById('notesLoanId');
+    const notesText    = document.getElementById('notesText');
+    const notesSaveBtn = document.getElementById('notesSaveBtn');
+    const notesStatus  = document.getElementById('notesStatus');
+
+    document.getElementById('notesClose').addEventListener('click', () => notesModal.classList.remove('open'));
+    notesModal.addEventListener('click', e => { if (e.target === notesModal) notesModal.classList.remove('open'); });
+
+    function openNotesModal(loanId) {
+      notesLoanId.value = loanId;
+      notesStatus.textContent = '';
+      notesStatus.className = 'rep-status';
+      const app = allApplications.find(a => a.id == loanId);
+      notesText.value = app ? (app.notes || '') : '';
+      notesModal.classList.add('open');
+      setTimeout(() => notesText.focus(), 50);
+    }
+
+    notesSaveBtn.addEventListener('click', async () => {
+      const loanId = notesLoanId.value;
+      notesSaveBtn.disabled = true;
+      notesStatus.textContent = '';
+      try {
+        const fd = new FormData();
+        fd.append('id',         loanId);
+        fd.append('notes',      notesText.value.trim());
+        fd.append('csrf_token', CSRF_TOKEN);
+        const res  = await fetch('api/save_notes.php', { method: 'POST', body: fd });
+        const data = await res.json();
+        if (!data.success) throw new Error(data.message);
+
+        // Update local copy
+        const app = allApplications.find(a => a.id == loanId);
+        if (app) app.notes = notesText.value.trim();
+
+        notesStatus.textContent = 'Saved.';
+        notesStatus.className = 'rep-status ok';
+        // Refresh the notes button style in the table
+        renderTablePage();
+        setTimeout(() => notesModal.classList.remove('open'), 700);
+      } catch (err) {
+        notesStatus.textContent = err.message || 'Error saving notes.';
+        notesStatus.className = 'rep-status err';
+      } finally {
+        notesSaveBtn.disabled = false;
       }
     });
 

@@ -126,9 +126,9 @@ try {
         $pdo->prepare("INSERT INTO rate_limits (ip) VALUES (?)")->execute([$ip]);
     } catch (Throwable) {}
 
-    // Email notification
+    // ── Admin notification ────────────────────────────────────────────────────
     if (NOTIFY_EMAIL !== '') {
-        $emailBody = "New loan application received on Risonaf Loans Ghana.\n\n"
+        $adminBody = "New loan application received on Risonaf Loans Ghana.\n\n"
             . "Name:      {$fullName}\n"
             . "Phone:     {$phone}\n"
             . "Email:     {$email}\n"
@@ -139,8 +139,24 @@ try {
             . "Amount:    GHS {$amount}\n"
             . "Purpose:   {$purpose}\n\n"
             . "View all applications in the admin dashboard.";
-        sendMail(NOTIFY_EMAIL, "New Loan Application #{$newId} — {$fullName}", $emailBody);
+        sendMail(NOTIFY_EMAIL, "New Loan Application #{$newId} — {$fullName}", $adminBody);
     }
+
+    // ── Confirmation email to applicant ───────────────────────────────────────
+    $confirmBody = "Dear {$fullName},\n\n"
+        . "Thank you for applying with Risonaf Loans Ghana. We have received your application and our team will review it shortly.\n\n"
+        . "Application Summary\n"
+        . "-------------------\n"
+        . "Reference:  #{$newId}\n"
+        . "Loan Type:  {$loanType}\n"
+        . "Amount:     GHS " . number_format($amount, 2) . "\n"
+        . "Purpose:    {$purpose}\n"
+        . "Submitted:  " . date('Y-m-d H:i') . "\n\n"
+        . "You will receive another email once a decision has been made.\n"
+        . "To check your status at any time, visit our website and use the \"Check Status\" page.\n\n"
+        . "If you did not submit this application, please contact us immediately.\n\n"
+        . "— The Risonaf Loans Team";
+    sendMail($email, "Application Received — Reference #{$newId}", $confirmBody);
 
     echo json_encode([
         'success' => true,
