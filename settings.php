@@ -10,7 +10,7 @@ if (empty($_SESSION['admin_logged_in'])) {
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Settings | Risobaf Loans Ghana</title>
+  <title>Settings | Risonaf Loans Ghana</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
@@ -80,7 +80,7 @@ if (empty($_SESSION['admin_logged_in'])) {
     <div class="container header-row">
       <div class="brand">
         <div class="brand-icon">🏦</div>
-        Risobaf Loans
+        Risonaf Loans
         <span class="admin-tag">Admin</span>
       </div>
       <div class="header-actions">
