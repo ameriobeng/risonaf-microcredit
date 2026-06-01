@@ -16,71 +16,69 @@ if (empty($_SESSION['admin_logged_in'])) {
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --primary:       #16a34a;
-      --primary-dark:  #15803d;
-      --primary-light: #dcfce7;
-      --gold:          #d97706;
-      --dark:          #0f172a;
-      --text:          #1e293b;
-      --muted:         #64748b;
-      --light:         #f8fafc;
-      --card:          #ffffff;
-      --border:        #e2e8f0;
-      --danger:        #dc2626;
-      --danger-light:  #fee2e2;
-      --success-light: #dcfce7;
+      --navy:        #0c2340;
+      --navy-mid:    #163556;
+      --navy-light:  #e6edf7;
+      --gold:        #b8862a;
+      --gold-bright: #d4a73a;
+      --text:        #1b2535;
+      --muted:       #677080;
+      --light:       #f3f5f8;
+      --card:        #ffffff;
+      --border:      #d9e0eb;
+      --danger:      #be2222;
+      --danger-bg:   #fde8e8;
+      --success:     #0f6d3d;
+      --success-bg:  #e5f3ec;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'Inter', Arial, sans-serif; background: var(--light); color: var(--text); min-height: 100vh; }
     .container { width: min(1200px, 94%); margin: 0 auto; }
 
-    header {
-      background: var(--dark);
-      color: white;
-      padding: 1rem 0;
-      box-shadow: 0 2px 16px rgba(0,0,0,.2);
-      position: sticky; top: 0; z-index: 100;
-    }
+    /* Header */
+    header { background: var(--navy); color: white; padding: 1rem 0; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid rgba(255,255,255,.06); }
     .header-row { display: flex; justify-content: space-between; align-items: center; gap: .8rem; flex-wrap: wrap; }
-    .brand { display: flex; align-items: center; gap: .6rem; font-weight: 800; font-size: 1rem; }
-    .brand-icon { width: 34px; height: 34px; background: linear-gradient(135deg, var(--primary), var(--gold)); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; }
-    .admin-tag { font-size: .72rem; font-weight: 700; background: rgba(22,163,74,.25); color: #86efac; border: 1px solid rgba(22,163,74,.3); padding: .18rem .55rem; border-radius: 100px; letter-spacing: .4px; text-transform: uppercase; }
-    .header-actions { display: flex; gap: .6rem; }
-    .btn { display: inline-flex; align-items: center; gap: .4rem; font-family: inherit; font-weight: 700; font-size: .88rem; padding: .6rem 1rem; border-radius: 9px; border: none; cursor: pointer; text-decoration: none; transition: all .15s; }
-    .btn-ghost { background: rgba(255,255,255,.1); color: white; border: 1px solid rgba(255,255,255,.18); }
-    .btn-ghost:hover { background: rgba(255,255,255,.18); }
+    .brand { display: flex; align-items: center; gap: .65rem; text-decoration: none; color: white; }
+    .brand-mark { width: 32px; height: 32px; background: var(--gold); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: .75rem; font-weight: 800; color: var(--navy); }
+    .brand-name { font-size: .97rem; font-weight: 700; }
+    .admin-tag { font-size: .67rem; font-weight: 700; background: rgba(184,134,42,.2); color: var(--gold-bright); border: 1px solid rgba(184,134,42,.25); padding: .16rem .5rem; border-radius: 100px; letter-spacing: .5px; text-transform: uppercase; }
+    .header-actions { display: flex; gap: .5rem; }
+    .btn { display: inline-flex; align-items: center; gap: .4rem; font-family: inherit; font-weight: 600; font-size: .84rem; padding: .5rem .9rem; border-radius: 7px; border: none; cursor: pointer; text-decoration: none; transition: all .15s; }
+    .btn-ghost { background: rgba(255,255,255,.08); color: rgba(255,255,255,.85); border: 1px solid rgba(255,255,255,.14); }
+    .btn-ghost:hover { background: rgba(255,255,255,.15); color: white; }
 
     main { padding: 2rem 0 3rem; }
+    .page-title { font-size: 1.35rem; font-weight: 800; color: var(--navy); letter-spacing: -.4px; margin-bottom: .25rem; }
+    .page-sub { font-size: .88rem; color: var(--muted); margin-bottom: 2rem; }
 
-    .page-title { font-size: 1.4rem; font-weight: 800; color: var(--dark); letter-spacing: -.4px; margin-bottom: .3rem; }
-    .page-sub { font-size: .9rem; color: var(--muted); margin-bottom: 1.8rem; }
-
-    .panel { background: white; border: 1px solid var(--border); border-radius: 16px; overflow: hidden; box-shadow: 0 2px 12px rgba(0,0,0,.04); max-width: 520px; }
-    .panel-header { padding: 1.1rem 1.4rem; border-bottom: 1px solid var(--border); }
-    .panel-header h2 { font-size: 1rem; font-weight: 700; color: var(--dark); }
-    .panel-header p { font-size: .83rem; color: var(--muted); margin-top: .2rem; }
+    .panel { background: white; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; box-shadow: 0 2px 12px rgba(12,35,64,.05); max-width: 500px; }
+    .panel-header { padding: 1.1rem 1.4rem; border-bottom: 1px solid var(--border); background: #fafbfd; }
+    .panel-header h2 { font-size: .97rem; font-weight: 700; color: var(--navy); }
+    .panel-header p { font-size: .82rem; color: var(--muted); margin-top: .2rem; }
     .panel-body { padding: 1.4rem; }
 
     .field { margin-bottom: 1rem; }
-    .field label { display: block; font-size: .85rem; font-weight: 600; color: var(--text); margin-bottom: .4rem; }
-    .field input { width: 100%; padding: .72rem .85rem; border: 1.5px solid #cbd5e1; border-radius: 10px; font: inherit; font-size: .95rem; background: var(--light); color: var(--text); outline: none; transition: border-color .15s, box-shadow .15s; }
-    .field input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(22,163,74,.12); background: white; }
+    .field label { display: block; font-size: .83rem; font-weight: 600; color: var(--text); margin-bottom: .38rem; }
+    .field input { width: 100%; padding: .7rem .85rem; border: 1.5px solid #cdd4df; border-radius: 8px; font: inherit; font-size: .93rem; background: var(--light); color: var(--text); outline: none; transition: border-color .15s, box-shadow .15s; }
+    .field input:focus { border-color: var(--navy); box-shadow: 0 0 0 3px rgba(12,35,64,.1); background: white; }
 
-    .btn-save { width: 100%; justify-content: center; padding: .8rem; font-size: .95rem; background: var(--primary); color: white; border-radius: 10px; margin-top: .5rem; }
-    .btn-save:hover { background: var(--primary-dark); transform: translateY(-1px); }
+    .btn-save { width: 100%; justify-content: center; padding: .78rem; font-size: .93rem; background: var(--navy); color: white; border-radius: 8px; margin-top: .5rem; }
+    .btn-save:hover { background: var(--navy-mid); transform: translateY(-1px); }
 
-    .alert { border-radius: 10px; padding: .75rem 1rem; font-size: .88rem; font-weight: 600; margin-bottom: 1rem; display: none; }
-    .alert.success { background: var(--success-light); color: var(--primary-dark); border: 1px solid #bbf7d0; }
-    .alert.error   { background: var(--danger-light);  color: var(--danger);        border: 1px solid #fecaca; }
-    .alert.show { display: flex; align-items: center; gap: .5rem; }
+    .alert { border-radius: 8px; padding: .72rem 1rem; font-size: .85rem; font-weight: 600; margin-bottom: 1rem; display: none; align-items: center; gap: .5rem; }
+    .alert.success { background: var(--success-bg); color: var(--success); border: 1px solid #a7d9bc; }
+    .alert.error   { background: var(--danger-bg);  color: var(--danger);  border: 1px solid #f5c6c6; }
+    .alert.show { display: flex; }
   </style>
 </head>
 <body>
   <header>
     <div class="container header-row">
-      <div class="brand">
-        <div class="brand-icon">🏦</div>
-        Risonaf Loans
+      <div style="display:flex;align-items:center;gap:.65rem;">
+        <a class="brand" href="index.php">
+          <div class="brand-mark">RL</div>
+          <span class="brand-name">Risonaf Loans</span>
+        </a>
         <span class="admin-tag">Admin</span>
       </div>
       <div class="header-actions">
@@ -93,11 +91,11 @@ if (empty($_SESSION['admin_logged_in'])) {
   <main>
     <div class="container">
       <div class="page-title">Settings</div>
-      <div class="page-sub">Manage your admin account.</div>
+      <div class="page-sub">Manage your admin account credentials.</div>
 
       <div class="panel">
         <div class="panel-header">
-          <h2>🔐 Change Password</h2>
+          <h2>Change Password</h2>
           <p>Choose a strong password of at least 8 characters.</p>
         </div>
         <div class="panel-body">
@@ -124,12 +122,11 @@ if (empty($_SESSION['admin_logged_in'])) {
 
   <script>
     const CSRF_TOKEN = '<?= htmlspecialchars($_SESSION['csrf_token'] ?? '') ?>';
-
     const form     = document.getElementById('changePasswordForm');
     const alertBox = document.getElementById('alertBox');
 
     function showAlert(message, type) {
-      alertBox.textContent = (type === 'success' ? '✅ ' : '⚠️ ') + message;
+      alertBox.textContent = (type === 'success' ? '✓ ' : '⚠ ') + message;
       alertBox.className = 'alert show ' + type;
       if (type === 'success') setTimeout(() => { alertBox.className = 'alert'; }, 4000);
     }
@@ -141,15 +138,9 @@ if (empty($_SESSION['admin_logged_in'])) {
       try {
         const res    = await fetch('api/change_password.php', { method: 'POST', body: data });
         const result = await res.json();
-        if (result.success) {
-          form.reset();
-          showAlert(result.message, 'success');
-        } else {
-          showAlert(result.message, 'error');
-        }
-      } catch {
-        showAlert('Network error — please try again.', 'error');
-      }
+        if (result.success) { form.reset(); showAlert(result.message, 'success'); }
+        else showAlert(result.message, 'error');
+      } catch { showAlert('Network error — please try again.', 'error'); }
     });
   </script>
 </body>

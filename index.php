@@ -3,523 +3,169 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Risonaf Loans Ghana | Smart Financial Support</title>
+  <title>Risonaf Loans Ghana | Responsible Microfinance Solutions</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --primary: #16a34a;
-      --primary-dark: #15803d;
-      --primary-light: #dcfce7;
-      --gold: #d97706;
-      --gold-light: #fef3c7;
-      --dark: #0f172a;
-      --text: #1e293b;
-      --muted: #64748b;
-      --light: #f8fafc;
-      --card: #ffffff;
-      --border: #e2e8f0;
-      --success: #16a34a;
-      --danger: #dc2626;
+      --navy:         #0c2340;
+      --navy-mid:     #163556;
+      --navy-light:   #e6edf7;
+      --gold:         #b8862a;
+      --gold-bright:  #d4a73a;
+      --gold-light:   #fdf5e4;
+      --text:         #1b2535;
+      --muted:        #677080;
+      --light:        #f3f5f8;
+      --card:         #ffffff;
+      --border:       #d9e0eb;
+      --success:      #0f6d3d;
+      --success-bg:   #e5f3ec;
+      --danger:       #be2222;
+      --danger-bg:    #fde8e8;
     }
-
     * { box-sizing: border-box; margin: 0; padding: 0; }
-
-    body {
-      font-family: 'Inter', Arial, sans-serif;
-      background: var(--light);
-      color: var(--text);
-      line-height: 1.6;
-    }
-
-    .container {
-      width: min(1100px, 92%);
-      margin: 0 auto;
-    }
+    body { font-family: 'Inter', Arial, sans-serif; background: var(--light); color: var(--text); line-height: 1.6; }
+    .container { width: min(1100px, 92%); margin: 0 auto; }
 
     /* ── HEADER ── */
-    header {
-      background: var(--dark);
-      color: white;
-      padding: 1rem 0;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      box-shadow: 0 2px 16px rgba(0,0,0,.18);
+    header { background: var(--navy); color: white; padding: 1rem 0; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid rgba(255,255,255,.06); }
+    .nav { display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
+    .brand { display: flex; align-items: center; gap: .7rem; text-decoration: none; color: white; }
+    .brand-mark {
+      width: 36px; height: 36px;
+      background: var(--gold);
+      border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: .85rem; font-weight: 800; color: var(--navy); letter-spacing: -.5px;
     }
-
-    .nav {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 1rem;
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: .6rem;
-      font-weight: 800;
-      font-size: 1.05rem;
-      letter-spacing: -.2px;
-    }
-
-    .brand-icon {
-      width: 34px;
-      height: 34px;
-      background: linear-gradient(135deg, var(--primary), var(--gold));
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.1rem;
-    }
-
-    .links {
-      display: flex;
-      gap: .4rem;
-      flex-wrap: wrap;
-    }
-
-    .links a {
-      color: #94a3b8;
-      text-decoration: none;
-      font-weight: 500;
-      font-size: .92rem;
-      padding: .45rem .75rem;
-      border-radius: 8px;
-      transition: color .15s, background .15s;
-    }
-
-    .links a:hover {
-      color: white;
-      background: rgba(255,255,255,.1);
-    }
+    .brand-text { font-size: 1rem; font-weight: 700; letter-spacing: -.2px; }
+    .brand-text small { display: block; font-size: .65rem; font-weight: 500; color: rgba(255,255,255,.5); letter-spacing: .5px; text-transform: uppercase; margin-top: -2px; }
+    .nav-links { display: flex; gap: .2rem; flex-wrap: wrap; }
+    .nav-link { color: rgba(255,255,255,.7); text-decoration: none; font-size: .88rem; font-weight: 500; padding: .42rem .75rem; border-radius: 6px; transition: all .15s; }
+    .nav-link:hover { color: white; background: rgba(255,255,255,.08); }
+    .nav-link.cta { color: var(--navy); background: var(--gold); font-weight: 600; }
+    .nav-link.cta:hover { background: var(--gold-bright); }
 
     /* ── HERO ── */
     .hero {
-      background: linear-gradient(135deg, var(--dark) 0%, #1e3a2f 60%, #14532d 100%);
+      background: var(--navy);
       color: white;
-      padding: 5rem 0 4rem;
+      padding: 5rem 0 4.5rem;
       position: relative;
       overflow: hidden;
     }
-
     .hero::before {
       content: '';
       position: absolute;
-      top: -80px;
-      right: -80px;
-      width: 420px;
-      height: 420px;
-      background: radial-gradient(circle, rgba(217,119,6,.18) 0%, transparent 70%);
-      border-radius: 50%;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 60% 80% at 110% 50%, rgba(184,134,42,.12) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 60% at -10% 80%, rgba(22,53,86,.8) 0%, transparent 60%);
       pointer-events: none;
     }
+    .hero-inner { position: relative; display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: center; }
+    .hero-label { display: inline-flex; align-items: center; gap: .5rem; font-size: .78rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--gold-bright); margin-bottom: 1.1rem; }
+    .hero-label::before { content: ''; width: 20px; height: 2px; background: var(--gold); border-radius: 2px; }
+    .hero h1 { font-size: clamp(1.9rem, 3.5vw, 2.8rem); font-weight: 800; line-height: 1.18; letter-spacing: -.5px; margin-bottom: 1.1rem; }
+    .hero h1 em { font-style: normal; color: var(--gold-bright); }
+    .hero p { font-size: 1rem; color: rgba(255,255,255,.7); max-width: 480px; margin-bottom: 2rem; line-height: 1.7; }
+    .hero-actions { display: flex; gap: .8rem; flex-wrap: wrap; }
+    .btn-hero-primary { background: var(--gold); color: var(--navy); font: inherit; font-weight: 700; font-size: .95rem; padding: .8rem 1.6rem; border: none; border-radius: 7px; cursor: pointer; text-decoration: none; transition: all .15s; display: inline-flex; align-items: center; gap: .5rem; }
+    .btn-hero-primary:hover { background: var(--gold-bright); transform: translateY(-1px); }
+    .btn-hero-outline { background: transparent; color: white; font: inherit; font-weight: 600; font-size: .95rem; padding: .8rem 1.5rem; border: 1.5px solid rgba(255,255,255,.3); border-radius: 7px; cursor: pointer; text-decoration: none; transition: all .15s; display: inline-flex; align-items: center; gap: .5rem; }
+    .btn-hero-outline:hover { border-color: rgba(255,255,255,.7); background: rgba(255,255,255,.06); }
 
-    .hero-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: .5rem;
-      background: rgba(22,163,74,.2);
-      border: 1px solid rgba(22,163,74,.4);
-      color: #86efac;
-      font-size: .82rem;
-      font-weight: 600;
-      padding: .35rem .8rem;
-      border-radius: 100px;
-      margin-bottom: 1.2rem;
-      letter-spacing: .3px;
-    }
-
-    .hero h1 {
-      font-size: clamp(1.9rem, 4vw, 3rem);
-      font-weight: 800;
-      line-height: 1.2;
-      margin-bottom: 1rem;
-      letter-spacing: -.5px;
-    }
-
-    .hero h1 span {
-      color: #fbbf24;
-    }
-
-    .hero p {
-      font-size: 1.05rem;
-      color: #94a3b8;
-      max-width: 560px;
-      margin-bottom: 2rem;
-    }
-
-    .hero-actions {
-      display: flex;
-      gap: .8rem;
-      flex-wrap: wrap;
-    }
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: .5rem;
-      font-family: inherit;
-      font-weight: 700;
-      font-size: .95rem;
-      padding: .8rem 1.4rem;
-      border-radius: 10px;
-      border: none;
-      cursor: pointer;
-      text-decoration: none;
-      transition: all .15s;
-    }
-
-    .btn-primary {
-      background: var(--primary);
-      color: white;
-    }
-
-    .btn-primary:hover { background: var(--primary-dark); transform: translateY(-1px); }
-
-    .btn-outline {
-      background: transparent;
-      color: white;
-      border: 1.5px solid rgba(255,255,255,.3);
-    }
-
-    .btn-outline:hover { border-color: white; background: rgba(255,255,255,.08); }
+    /* Hero right panel */
+    .hero-card { background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1); border-radius: 14px; padding: 1.6rem; backdrop-filter: blur(8px); }
+    .hero-card-title { font-size: .78rem; font-weight: 600; text-transform: uppercase; letter-spacing: .8px; color: var(--gold-bright); margin-bottom: 1.1rem; }
+    .hero-stats { display: grid; grid-template-columns: 1fr 1fr; gap: .8rem; }
+    .hero-stat { background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.08); border-radius: 10px; padding: .9rem 1rem; }
+    .hero-stat-val { font-size: 1.5rem; font-weight: 800; color: white; letter-spacing: -.5px; }
+    .hero-stat-lbl { font-size: .75rem; color: rgba(255,255,255,.5); margin-top: .2rem; }
+    .hero-divider { border: none; border-top: 1px solid rgba(255,255,255,.08); margin: 1rem 0; }
+    .hero-note { font-size: .8rem; color: rgba(255,255,255,.4); text-align: center; }
 
     /* ── TRUST BAR ── */
-    .trust-bar {
-      background: white;
-      border-bottom: 1px solid var(--border);
-      padding: .9rem 0;
-    }
-
-    .trust-items {
-      display: flex;
-      gap: 2rem;
-      flex-wrap: wrap;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .trust-item {
-      display: flex;
-      align-items: center;
-      gap: .5rem;
-      font-size: .88rem;
-      font-weight: 600;
-      color: var(--muted);
-    }
-
-    .trust-item span:first-child {
-      font-size: 1.1rem;
-    }
+    .trust-bar { background: white; border-bottom: 1px solid var(--border); padding: .85rem 0; }
+    .trust-items { display: flex; gap: 2.5rem; flex-wrap: wrap; justify-content: center; }
+    .trust-item { display: flex; align-items: center; gap: .55rem; font-size: .83rem; font-weight: 600; color: var(--muted); }
+    .trust-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--gold); flex-shrink: 0; }
 
     /* ── SECTIONS ── */
-    section { padding: 3rem 0; }
-
-    .section-label {
-      font-size: .8rem;
-      font-weight: 700;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      color: var(--primary);
-      margin-bottom: .5rem;
-    }
-
-    .section-title {
-      font-size: clamp(1.4rem, 2.5vw, 2rem);
-      font-weight: 800;
-      color: var(--dark);
-      letter-spacing: -.4px;
-      margin-bottom: .5rem;
-    }
-
-    .section-sub {
-      color: var(--muted);
-      font-size: .97rem;
-      margin-bottom: 2rem;
-    }
+    section { padding: 3.5rem 0; }
+    .section-eyebrow { font-size: .72rem; font-weight: 700; letter-spacing: 1.8px; text-transform: uppercase; color: var(--gold); margin-bottom: .55rem; }
+    .section-title { font-size: clamp(1.4rem, 2.5vw, 2rem); font-weight: 800; color: var(--navy); letter-spacing: -.4px; margin-bottom: .5rem; }
+    .section-sub { color: var(--muted); font-size: .96rem; margin-bottom: 2.2rem; }
 
     /* ── SERVICE CARDS ── */
-    .services-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-      gap: 1.2rem;
-    }
+    .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 1.2rem; }
+    .service-card { background: white; border: 1px solid var(--border); border-radius: 12px; padding: 1.6rem; transition: box-shadow .2s, transform .2s; position: relative; overflow: hidden; }
+    .service-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--navy); }
+    .service-card:hover { box-shadow: 0 8px 28px rgba(12,35,64,.1); transform: translateY(-2px); }
+    .service-icon { width: 44px; height: 44px; background: var(--navy-light); border-radius: 9px; display: flex; align-items: center; justify-content: center; margin-bottom: 1rem; }
+    .service-icon svg { color: var(--navy); }
+    .service-card h3 { font-size: .97rem; font-weight: 700; color: var(--navy); margin-bottom: .4rem; }
+    .service-card p { font-size: .88rem; color: var(--muted); line-height: 1.6; }
 
-    .service-card {
-      background: white;
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 1.5rem;
-      transition: box-shadow .2s, transform .2s;
-    }
-
-    .service-card:hover {
-      box-shadow: 0 8px 28px rgba(0,0,0,.09);
-      transform: translateY(-3px);
-    }
-
-    .service-icon {
-      width: 48px;
-      height: 48px;
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.4rem;
-      margin-bottom: 1rem;
-    }
-
-    .icon-green { background: var(--primary-light); }
-    .icon-gold  { background: var(--gold-light); }
-    .icon-blue  { background: #dbeafe; }
-    .icon-purple{ background: #ede9fe; }
-
-    .service-card h3 {
-      font-size: 1rem;
-      font-weight: 700;
-      margin-bottom: .4rem;
-      color: var(--dark);
-    }
-
-    .service-card p {
-      font-size: .9rem;
-      color: var(--muted);
-      line-height: 1.55;
-    }
-
-    /* ── LOAN FORM ── */
-    .form-section {
-      background: linear-gradient(180deg, #f0fdf4 0%, var(--light) 100%);
-    }
-
-    .form-card {
-      background: white;
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 2rem;
-      box-shadow: 0 4px 24px rgba(0,0,0,.06);
-      max-width: 780px;
-      margin: 0 auto;
-    }
-
-    .form-header {
-      display: flex;
-      align-items: center;
-      gap: .75rem;
-      margin-bottom: 1.5rem;
-      padding-bottom: 1.2rem;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .form-header-icon {
-      width: 44px;
-      height: 44px;
-      background: var(--primary-light);
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.3rem;
-      flex-shrink: 0;
-    }
-
-    .form-header h2 {
-      font-size: 1.25rem;
-      font-weight: 800;
-      color: var(--dark);
-      letter-spacing: -.3px;
-    }
-
-    .form-header p {
-      font-size: .88rem;
-      color: var(--muted);
-      margin-top: .1rem;
-    }
-
+    /* ── FORM ── */
+    .form-section { background: linear-gradient(180deg, #eef2f8 0%, var(--light) 100%); }
+    .form-card { background: white; border: 1px solid var(--border); border-radius: 14px; padding: 2.2rem; box-shadow: 0 4px 24px rgba(12,35,64,.06); max-width: 780px; margin: 0 auto; }
+    .form-head { display: flex; align-items: flex-start; gap: .9rem; margin-bottom: 1.8rem; padding-bottom: 1.4rem; border-bottom: 1px solid var(--border); }
+    .form-head-icon { width: 42px; height: 42px; background: var(--navy); border-radius: 9px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .form-head h2 { font-size: 1.2rem; font-weight: 800; color: var(--navy); letter-spacing: -.3px; }
+    .form-head p { font-size: .85rem; color: var(--muted); margin-top: .15rem; }
     form { display: grid; gap: 1rem; }
-
-    .row {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 1rem;
-    }
-
-    .field label {
-      display: block;
-      font-size: .88rem;
-      font-weight: 600;
-      color: var(--text);
-      margin-bottom: .4rem;
-    }
-
-    .field input,
-    .field select,
-    .field textarea {
-      width: 100%;
-      padding: .72rem .85rem;
-      border: 1.5px solid #cbd5e1;
-      border-radius: 10px;
-      font: inherit;
-      font-size: .95rem;
-      background: white;
-      color: var(--text);
-      transition: border-color .15s, box-shadow .15s;
-      outline: none;
-    }
-
-    .field input:focus,
-    .field select:focus,
-    .field textarea:focus {
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(22,163,74,.12);
-    }
-
+    .row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+    .field label { display: block; font-size: .84rem; font-weight: 600; color: var(--text); margin-bottom: .38rem; }
+    .field input, .field select, .field textarea { width: 100%; padding: .7rem .85rem; border: 1.5px solid #cdd4df; border-radius: 8px; font: inherit; font-size: .93rem; background: white; color: var(--text); outline: none; transition: border-color .15s, box-shadow .15s; }
+    .field input:focus, .field select:focus, .field textarea:focus { border-color: var(--navy); box-shadow: 0 0 0 3px rgba(12,35,64,.1); }
     .field textarea { min-height: 110px; resize: vertical; }
+    .submit-btn { width: 100%; justify-content: center; font-size: .97rem; font-weight: 700; padding: .88rem 1.4rem; background: var(--navy); color: white; border: none; border-radius: 9px; cursor: pointer; font-family: inherit; margin-top: .4rem; transition: all .15s; }
+    .submit-btn:hover { background: var(--navy-mid); transform: translateY(-1px); }
+    .msg { font-size: .88rem; font-weight: 600; min-height: 1.2rem; padding: .5rem .75rem; border-radius: 7px; }
+    .msg.success { background: var(--success-bg); color: var(--success); }
+    .msg.error { background: var(--danger-bg); color: var(--danger); }
 
-    .submit-btn {
-      width: 100%;
-      justify-content: center;
-      font-size: 1rem;
-      padding: .9rem 1.4rem;
-      background: var(--primary);
-      color: white;
-      border-radius: 12px;
-      margin-top: .4rem;
-    }
-
-    .submit-btn:hover { background: var(--primary-dark); transform: translateY(-1px); }
-
-    .msg {
-      font-size: .9rem;
-      font-weight: 600;
-      min-height: 1.2rem;
-      padding: .5rem .75rem;
-      border-radius: 8px;
-    }
-
-    .msg.success {
-      background: var(--primary-light);
-      color: #15803d;
-    }
-
-    .msg.error {
-      background: #fee2e2;
-      color: #b91c1c;
-    }
-
-    /* ── SUBMISSIONS LIST ── */
-    .submissions-section {
-      margin-top: 1.5rem;
-      padding-top: 1.2rem;
-      border-top: 1px solid var(--border);
-    }
-
-    .submissions-section h3 {
-      font-size: .92rem;
-      font-weight: 700;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: .8px;
-      margin-bottom: .8rem;
-    }
-
-    .submissions-list {
-      max-height: 300px;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      gap: .6rem;
-    }
-
-    .submission-item {
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: .9rem 1rem;
-      background: var(--light);
-      font-size: .9rem;
-    }
-
-    .submission-item strong { color: var(--dark); }
-
-    .submission-item .sub-meta {
-      font-size: .82rem;
-      color: var(--muted);
-      margin-top: .25rem;
-    }
-
-    .loan-badge {
-      display: inline-block;
-      font-size: .75rem;
-      font-weight: 700;
-      padding: .15rem .5rem;
-      border-radius: 100px;
-      background: var(--primary-light);
-      color: var(--primary-dark);
-      margin-left: .3rem;
-    }
+    /* ── SUBMISSIONS ── */
+    .submissions-section { margin-top: 1.6rem; padding-top: 1.3rem; border-top: 1px solid var(--border); }
+    .submissions-section h3 { font-size: .76rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .9px; margin-bottom: .8rem; }
+    .submission-item { border: 1px solid var(--border); border-radius: 9px; padding: .85rem 1rem; background: var(--light); font-size: .88rem; color: var(--muted); }
 
     /* ── ABOUT ── */
-    .about-card {
-      background: var(--dark);
-      color: white;
-      border-radius: 20px;
-      padding: 2.5rem;
-    }
-
-    .about-card h2 {
-      font-size: 1.6rem;
-      font-weight: 800;
-      margin-bottom: 1rem;
-      letter-spacing: -.4px;
-    }
-
-    .about-card h2 span { color: #fbbf24; }
-
-    .about-card p {
-      color: #94a3b8;
-      line-height: 1.7;
-      margin-bottom: .8rem;
-    }
+    .about-card { background: var(--navy); color: white; border-radius: 14px; padding: 2.5rem; }
+    .about-card h2 { font-size: 1.6rem; font-weight: 800; margin-bottom: 1rem; letter-spacing: -.4px; }
+    .about-card h2 em { font-style: normal; color: var(--gold-bright); }
+    .about-card p { color: rgba(255,255,255,.65); line-height: 1.75; margin-bottom: .8rem; }
 
     /* ── FOOTER ── */
-    footer {
-      background: var(--dark);
-      color: #475569;
-      text-align: center;
-      padding: 1.5rem 0;
-      font-size: .88rem;
-      border-top: 1px solid #1e293b;
-    }
+    footer { background: var(--navy); color: rgba(255,255,255,.4); text-align: center; padding: 1.5rem 0; font-size: .83rem; border-top: 1px solid rgba(255,255,255,.06); }
+    footer span { color: rgba(255,255,255,.6); }
 
-    footer span { color: #94a3b8; }
+    /* ── LOAN BADGE ── */
+    .loan-badge { display: inline-block; font-size: .72rem; font-weight: 600; padding: .15rem .55rem; border-radius: 100px; background: var(--navy-light); color: var(--navy); margin-left: .3rem; }
 
-    @media (max-width: 680px) {
-      .row { grid-template-columns: 1fr; }
-      .links { gap: .2rem; }
-      .hero { padding: 3.5rem 0 3rem; }
-      .form-card { padding: 1.4rem; }
-      .trust-items { gap: 1rem; }
-    }
+    @media (max-width: 760px) { .hero-inner { grid-template-columns: 1fr; } .hero-card { display: none; } .row { grid-template-columns: 1fr; } .form-card { padding: 1.4rem; } .trust-items { gap: 1rem; } }
   </style>
 </head>
 <body>
 
   <header>
     <div class="container nav">
-      <div class="brand">
-        <div class="brand-icon">🏦</div>
-        Risonaf Loans
-      </div>
-      <nav class="links">
-        <a href="#home">Home</a>
-        <a href="#services">Services</a>
-        <a href="#apply">Apply</a>
-        <a href="#about">About</a>
-        <a href="status.php">Check Status</a>
+      <a class="brand" href="index.php">
+        <div class="brand-mark">RL</div>
+        <div class="brand-text">
+          Risonaf Loans
+          <small>Ghana</small>
+        </div>
+      </a>
+      <nav class="nav-links">
+        <a class="nav-link" href="#home">Home</a>
+        <a class="nav-link" href="#services">Services</a>
+        <a class="nav-link" href="#about">About</a>
+        <a class="nav-link" href="status.php">Track Application</a>
+        <a class="nav-link cta" href="#apply">Apply Now</a>
       </nav>
     </div>
   </header>
@@ -528,15 +174,45 @@
 
     <section class="hero">
       <div class="container">
-        <div class="hero-badge">🇬🇭 Serving Ghana Since 2020</div>
-        <h1>Financial Support That<br /><span>Moves Ghana Forward</span></h1>
-        <p>
-          Flexible, affordable loans for individuals, small businesses, and community groups.
-          Fast processing. Transparent terms. Customer-first service.
-        </p>
-        <div class="hero-actions">
-          <a class="btn btn-primary" href="#apply">Apply for a Loan</a>
-          <a class="btn btn-outline" href="#services">Our Services</a>
+        <div class="hero-inner">
+          <div>
+            <div class="hero-label">Trusted Microfinance · Ghana</div>
+            <h1>Financing That Helps <em>Ghana Grow</em></h1>
+            <p>
+              Flexible, transparent, and responsible loans for individuals,
+              small businesses, and community groups across Ghana.
+              Fast decisions. Fair terms.
+            </p>
+            <div class="hero-actions">
+              <a class="btn-hero-primary" href="#apply">Apply for a Loan</a>
+              <a class="btn-hero-outline" href="#services">Our Services</a>
+            </div>
+          </div>
+          <div>
+            <div class="hero-card">
+              <div class="hero-card-title">Why Risonaf</div>
+              <div class="hero-stats">
+                <div class="hero-stat">
+                  <div class="hero-stat-val">3-Day</div>
+                  <div class="hero-stat-lbl">Processing time</div>
+                </div>
+                <div class="hero-stat">
+                  <div class="hero-stat-val">Low %</div>
+                  <div class="hero-stat-lbl">Interest rates</div>
+                </div>
+                <div class="hero-stat">
+                  <div class="hero-stat-val">3 Types</div>
+                  <div class="hero-stat-lbl">Loan products</div>
+                </div>
+                <div class="hero-stat">
+                  <div class="hero-stat-val">100%</div>
+                  <div class="hero-stat-lbl">Transparent terms</div>
+                </div>
+              </div>
+              <hr class="hero-divider" />
+              <div class="hero-note">Serving communities across Ghana since 2020</div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -544,41 +220,49 @@
     <div class="trust-bar">
       <div class="container">
         <div class="trust-items">
-          <div class="trust-item"><span>✅</span> Verified & Secure</div>
-          <div class="trust-item"><span>⚡</span> Fast Processing</div>
-          <div class="trust-item"><span>🤝</span> Flexible Repayment</div>
-          <div class="trust-item"><span>📞</span> Dedicated Support</div>
-          <div class="trust-item"><span>🔒</span> Data Protected</div>
+          <div class="trust-item"><div class="trust-dot"></div>Verified &amp; Regulated</div>
+          <div class="trust-item"><div class="trust-dot"></div>Fast Processing</div>
+          <div class="trust-item"><div class="trust-dot"></div>Flexible Repayment</div>
+          <div class="trust-item"><div class="trust-dot"></div>Dedicated Support</div>
+          <div class="trust-item"><div class="trust-dot"></div>Secure &amp; Confidential</div>
         </div>
       </div>
     </div>
 
     <section id="services">
       <div class="container">
-        <div class="section-label">What We Offer</div>
-        <div class="section-title">Our Loan Services</div>
-        <div class="section-sub">Designed for real needs across Ghana.</div>
+        <div class="section-eyebrow">What We Offer</div>
+        <div class="section-title">Our Loan Products</div>
+        <div class="section-sub">Designed for the real financial needs of Ghanaians.</div>
 
         <div class="services-grid">
           <article class="service-card">
-            <div class="service-icon icon-green">👤</div>
+            <div class="service-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+            </div>
             <h3>Personal Loans</h3>
-            <p>Support for education, health, rent, and urgent personal expenses with flexible repayment.</p>
+            <p>Support for education, healthcare, rent, and urgent personal needs with flexible repayment schedules.</p>
           </article>
           <article class="service-card">
-            <div class="service-icon icon-gold">🏪</div>
+            <div class="service-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            </div>
             <h3>Business Loans</h3>
-            <p>Affordable capital for stock, equipment, and expansion of small and growing businesses.</p>
+            <p>Capital for stock, equipment, and business growth. Designed for small and medium enterprises in Ghana.</p>
           </article>
           <article class="service-card">
-            <div class="service-icon icon-blue">👥</div>
+            <div class="service-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            </div>
             <h3>Group Loans</h3>
-            <p>Financial support for cooperatives and community groups with shared responsibility.</p>
+            <p>Shared-responsibility financing for cooperatives and community groups building financial stability together.</p>
           </article>
           <article class="service-card">
-            <div class="service-icon icon-purple">🚀</div>
+            <div class="service-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            </div>
             <h3>Quick Processing</h3>
-            <p>Fast review and transparent repayment terms with dedicated customer support throughout.</p>
+            <p>Decisions within 3 business days. Transparent terms, no hidden fees, and dedicated support throughout.</p>
           </article>
         </div>
       </div>
@@ -586,16 +270,18 @@
 
     <section id="apply" class="form-section">
       <div class="container">
-        <div class="section-label">Get Started</div>
+        <div class="section-eyebrow" style="text-align:center">Get Started</div>
         <div class="section-title" style="text-align:center">Apply for a Loan</div>
-        <div class="section-sub" style="text-align:center;margin-bottom:1.5rem">Complete the form below and our team will review your application.</div>
+        <div class="section-sub" style="text-align:center;margin-bottom:1.8rem">Complete the form below. Our team reviews every application personally.</div>
 
         <div class="form-card">
-          <div class="form-header">
-            <div class="form-header-icon">📋</div>
+          <div class="form-head">
+            <div class="form-head-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+            </div>
             <div>
               <h2>Loan Application Form</h2>
-              <p>All fields are required. Your data is handled securely.</p>
+              <p>All fields are required. Your information is handled with strict confidentiality.</p>
             </div>
           </div>
 
@@ -629,7 +315,7 @@
               <div class="field">
                 <label for="idType">ID Card Type</label>
                 <select id="idType" name="idType" required>
-                  <option value="">-- Select ID type --</option>
+                  <option value="">— Select ID type —</option>
                   <option>Ghana Card</option>
                   <option>Passport</option>
                   <option>Driver's License</option>
@@ -646,7 +332,7 @@
               <div class="field">
                 <label for="loanType">Loan Type</label>
                 <select id="loanType" name="loanType" required>
-                  <option value="">-- Select loan type --</option>
+                  <option value="">— Select loan type —</option>
                   <option>Personal Loan</option>
                   <option>Business Loan</option>
                   <option>Group Loan</option>
@@ -661,17 +347,17 @@
 
             <div class="field">
               <label for="purpose">Purpose of Loan</label>
-              <textarea id="purpose" name="purpose" placeholder="Briefly describe how you plan to use the loan…" required></textarea>
+              <textarea id="purpose" name="purpose" placeholder="Briefly describe how you plan to use this loan…" required></textarea>
             </div>
 
-            <button class="btn submit-btn" type="submit">Submit Application →</button>
+            <button class="submit-btn" type="submit">Submit Application</button>
             <div class="msg" id="formMsg" aria-live="polite"></div>
           </form>
 
           <div class="submissions-section">
             <h3>Applications Received</h3>
-            <div class="submissions-list" id="submissionsList">
-              <p style="color:var(--muted);font-size:.9rem">Loading…</p>
+            <div id="submissionsList">
+              <p style="color:var(--muted);font-size:.88rem">Loading…</p>
             </div>
           </div>
         </div>
@@ -681,14 +367,15 @@
     <section id="about">
       <div class="container">
         <div class="about-card">
-          <h2>About <span>Risonaf Loans</span></h2>
+          <h2>About <em>Risonaf Loans</em></h2>
           <p>
-            Risonaf Loans Ghana is committed to improving financial inclusion by providing accessible
-            and responsible micro-loan solutions across Ghana.
+            Risonaf Loans Ghana is committed to improving financial inclusion by providing accessible,
+            responsible, and affordable micro-loan solutions across Ghana.
           </p>
           <p>
-            Through fair repayment structures, financial guidance, and customer-centered service, we help
-            individuals, entrepreneurs, and groups build stability, grow businesses, and achieve long-term goals.
+            Through fair repayment structures, transparent pricing, and customer-centred service, we
+            help individuals, entrepreneurs, and community groups build financial stability, grow
+            businesses, and achieve their long-term goals.
           </p>
         </div>
       </div>
@@ -703,59 +390,44 @@
   </footer>
 
   <script>
-    const form = document.getElementById("loanForm");
-    const msg = document.getElementById("formMsg");
-    const submissionsList = document.getElementById("submissionsList");
+    const form  = document.getElementById("loanForm");
+    const msg   = document.getElementById("formMsg");
+    const subEl = document.getElementById("submissionsList");
 
     function showMessage(text, type) {
       msg.textContent = text;
       msg.className = "msg " + (type || "");
-      if (text) {
-        setTimeout(() => {
-          msg.textContent = "";
-          msg.className = "msg";
-        }, 3500);
-      }
-    }
-
-    function escapeHTML(str) {
-      return String(str ?? "")
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
+      if (text) setTimeout(() => { msg.textContent = ""; msg.className = "msg"; }, 4000);
     }
 
     async function renderSubmissions() {
-      submissionsList.innerHTML = '<p style="color:var(--muted);font-size:.9rem">Loading…</p>';
       try {
-        const res = await fetch("api/submit_count.php", { method: "GET" });
+        const res  = await fetch("api/submit_count.php");
         const data = await res.json();
-        const count = data.count ?? 0;
-        submissionsList.innerHTML = count > 0
-          ? `<div class="submission-item"><strong>${count}</strong> application${count !== 1 ? 's' : ''} received. Our team will be in touch shortly.</div>`
-          : '<p style="color:var(--muted);font-size:.9rem">No submissions yet. Be the first to apply!</p>';
+        const n = data.count ?? 0;
+        subEl.innerHTML = n > 0
+          ? `<div class="submission-item"><strong>${n}</strong> application${n !== 1 ? 's' : ''} received. Our team will be in touch shortly.</div>`
+          : '<p style="color:var(--muted);font-size:.88rem">No submissions yet — be the first to apply.</p>';
       } catch {
-        submissionsList.innerHTML = '<p style="color:var(--muted);font-size:.9rem">Unable to load status.</p>';
+        subEl.innerHTML = '<p style="color:var(--muted);font-size:.88rem">Unable to load status.</p>';
       }
     }
 
-    form.addEventListener("submit", async function (e) {
+    form.addEventListener("submit", async (e) => {
       e.preventDefault();
-      const formData = new FormData(form);
+      const btn = form.querySelector('.submit-btn');
+      btn.disabled = true; btn.textContent = 'Submitting…';
       try {
-        const response = await fetch("api/submit.php", { method: "POST", body: formData });
-        const result = await response.json();
-        if (!response.ok || !result.success) {
-          showMessage(result.message || "Failed to submit application.", "error");
-          return;
-        }
+        const res    = await fetch("api/submit.php", { method: "POST", body: new FormData(form) });
+        const result = await res.json();
+        if (!res.ok || !result.success) { showMessage(result.message || "Failed to submit.", "error"); return; }
         form.reset();
-        showMessage("Application submitted successfully.", "success");
+        showMessage("Application submitted. A confirmation has been sent to your email.", "success");
         await renderSubmissions();
       } catch {
-        showMessage("Network/server error while submitting.", "error");
+        showMessage("Network error — please try again.", "error");
+      } finally {
+        btn.disabled = false; btn.textContent = 'Submit Application';
       }
     });
 
