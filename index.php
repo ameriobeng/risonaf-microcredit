@@ -519,6 +519,7 @@
         <a href="#services">Services</a>
         <a href="#apply">Apply</a>
         <a href="#about">About</a>
+        <a href="status.php">Check Status</a>
       </nav>
     </div>
   </header>
@@ -606,7 +607,10 @@
               </div>
               <div class="field">
                 <label for="phone">Phone Number</label>
-                <input id="phone" name="phone" placeholder="e.g. 0244 000 000" required />
+                <input id="phone" name="phone" type="tel" placeholder="e.g. 0244000000"
+                       pattern="^(0\d{9}|\+233\d{9})$"
+                       title="Enter a valid Ghana phone number, e.g. 0244000000 or +233244000000"
+                       required />
               </div>
             </div>
 
@@ -650,7 +654,8 @@
               </div>
               <div class="field">
                 <label for="amount">Amount Requested (GHS)</label>
-                <input id="amount" name="amount" type="number" min="1" placeholder="e.g. 5000" required />
+                <input id="amount" name="amount" type="number" min="100" max="100000"
+                       placeholder="GHS 100 – 100,000" required />
               </div>
             </div>
 

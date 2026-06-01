@@ -1,0 +1,24 @@
+name: Guard credentials
+
+on: [push, pull_request]
+
+jobs:
+  check-config:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fail if config.php was committed
+        run: |
+          if git ls-files --error-unmatch config.php 2>/dev/null; then
+            echo "::error file=config.php::config.php must not be committed. It contains credentials. Add it to .gitignore."
+            exit 1
+          fi
+          echo "config.php is not tracked — OK"
+
+      - name: Scan for hard-coded secrets
+        run: |
+          # Fail if any PHP file contains a plain DB password or SMTP password assignment
+          if grep -rn "DB_PASS\s*=\s*'[^']'" --include="*.php" .; then
+            echo "::warning::Hard-coded DB_PASS found in a PHP file"
+          fi

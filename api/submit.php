@@ -1,6 +1,8 @@
 <?php
 declare(strict_types=1);
 
+session_start();
+
 header('Content-Type: application/json');
 
 require_once __DIR__ . '/../config.php';
@@ -12,6 +14,26 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
+// ── Rate limiting: max 5 submissions per IP per hour ──────────────────────────
+$ip = $_SERVER['HTTP_X_FORWARDED_FOR'] ?? $_SERVER['REMOTE_ADDR'] ?? 'unknown';
+$ip = trim(explode(',', $ip)[0]);
+
+try {
+    $ratePdo = getPDO();
+    $ratePdo->exec("DELETE FROM rate_limits WHERE submitted_at < DATE_SUB(NOW(), INTERVAL 1 HOUR)");
+    $rateStmt = $ratePdo->prepare("SELECT COUNT(*) FROM rate_limits WHERE ip = ?");
+    $rateStmt->execute([$ip]);
+    $count = (int)$rateStmt->fetchColumn();
+    if ($count >= 5) {
+        http_response_code(429);
+        echo json_encode(['success' => false, 'message' => 'Too many submissions. Please try again in an hour.']);
+        exit;
+    }
+} catch (Throwable) {
+    // rate limit table may not exist yet — allow through
+}
+
+// ── Input ─────────────────────────────────────────────────────────────────────
 $fullName  = trim((string)($_POST['fullName']  ?? ''));
 $phone     = trim((string)($_POST['phone']     ?? ''));
 $email     = trim((string)($_POST['email']     ?? ''));
@@ -25,6 +47,7 @@ $purpose   = trim((string)($_POST['purpose']   ?? ''));
 $allowedLoanTypes = ['Personal Loan', 'Business Loan', 'Group Loan'];
 $allowedIdTypes   = ['Ghana Card', 'Passport', "Driver's License", "Voter's ID"];
 
+// ── Required fields ───────────────────────────────────────────────────────────
 if (
     $fullName === '' || $phone    === '' || $email   === '' ||
     $location === '' || $idType   === '' || $idNumber === '' ||
@@ -35,28 +58,44 @@ if (
     exit;
 }
 
-if (!in_array($idType, $allowedIdTypes, true)) {
+// ── Ghana phone validation: 0XXXXXXXXX or +233XXXXXXXXX ──────────────────────
+if (!preg_match('/^(0\d{9}|\+233\d{9})$/', $phone)) {
     http_response_code(422);
-    echo json_encode(['success' => false, 'message' => 'Invalid ID card type']);
+    echo json_encode(['success' => false, 'message' => 'Enter a valid Ghana phone number (e.g. 0244000000 or +233244000000)']);
     exit;
 }
 
+// ── Email ─────────────────────────────────────────────────────────────────────
 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
     http_response_code(422);
     echo json_encode(['success' => false, 'message' => 'Invalid email address']);
     exit;
 }
 
+// ── ID type ───────────────────────────────────────────────────────────────────
+if (!in_array($idType, $allowedIdTypes, true)) {
+    http_response_code(422);
+    echo json_encode(['success' => false, 'message' => 'Invalid ID card type']);
+    exit;
+}
+
+// ── Loan type ─────────────────────────────────────────────────────────────────
 if (!in_array($loanType, $allowedLoanTypes, true)) {
     http_response_code(422);
     echo json_encode(['success' => false, 'message' => 'Invalid loan type']);
     exit;
 }
 
+// ── Amount: GHS 100 – 100,000 ─────────────────────────────────────────────────
 $amount = (float)$amountRaw;
-if ($amount <= 0) {
+if ($amount < 100) {
     http_response_code(422);
-    echo json_encode(['success' => false, 'message' => 'Amount must be greater than zero']);
+    echo json_encode(['success' => false, 'message' => 'Minimum loan amount is GHS 100']);
+    exit;
+}
+if ($amount > 100000) {
+    http_response_code(422);
+    echo json_encode(['success' => false, 'message' => 'Maximum loan amount is GHS 100,000']);
     exit;
 }
 
@@ -82,7 +121,12 @@ try {
 
     $newId = (int)$pdo->lastInsertId();
 
-    // Email notification (fire-and-forget — failure doesn't affect the response)
+    // Record this submission for rate limiting
+    try {
+        $pdo->prepare("INSERT INTO rate_limits (ip) VALUES (?)")->execute([$ip]);
+    } catch (Throwable) {}
+
+    // Email notification
     if (NOTIFY_EMAIL !== '') {
         $emailBody = "New loan application received on Risonaf Loans Ghana.\n\n"
             . "Name:      {$fullName}\n"

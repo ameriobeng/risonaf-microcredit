@@ -126,12 +126,63 @@ if (empty($_SESSION['admin_logged_in'])) {
     .empty-state p { font-size: .92rem; }
 
     /* ── STATUS BAR ── */
-    .panel-footer { padding: .75rem 1.3rem; border-top: 1px solid var(--border); background: #fafbfc; }
+    .panel-footer { padding: .75rem 1.3rem; border-top: 1px solid var(--border); background: #fafbfc; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: .5rem; }
     .status-msg { font-size: .88rem; font-weight: 600; color: var(--primary); min-height: 1.3rem; }
+
+    /* ── PAGINATION ── */
+    .pagination { display: flex; align-items: center; gap: .35rem; flex-wrap: wrap; }
+    .page-btn { font-family: inherit; font-size: .82rem; font-weight: 600; padding: .3rem .65rem; border-radius: 7px; border: 1.5px solid var(--border); background: white; color: var(--text); cursor: pointer; transition: all .15s; }
+    .page-btn:hover:not(:disabled) { border-color: var(--primary); color: var(--primary); }
+    .page-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+    .page-btn:disabled { opacity: .4; cursor: not-allowed; }
+    .page-info { font-size: .82rem; color: var(--muted); }
 
     /* ── EXPORT BTN ── */
     .btn-export { background: white; color: var(--primary); border: 1.5px solid var(--primary); font-size: .85rem; padding: .55rem .9rem; border-radius: 9px; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: .4rem; transition: all .15s; }
     .btn-export:hover { background: var(--primary-light); }
+
+    /* ── REPAYMENT BTN ── */
+    .btn-repay { background: #dbeafe; color: #1d4ed8; font-family: inherit; font-size: .75rem; font-weight: 700; padding: .3rem .65rem; border-radius: 7px; border: none; cursor: pointer; transition: all .15s; white-space: nowrap; }
+    .btn-repay:hover { background: #bfdbfe; }
+
+    /* ── MODAL OVERLAY ── */
+    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.45); z-index: 200; align-items: center; justify-content: center; padding: 1rem; }
+    .modal-overlay.open { display: flex; }
+    .modal { background: white; border-radius: 20px; width: min(520px, 100%); max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,.2); }
+    .modal-header { padding: 1.2rem 1.4rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+    .modal-header h3 { font-size: 1rem; font-weight: 700; color: var(--dark); }
+    .modal-close { background: none; border: none; font-size: 1.3rem; cursor: pointer; color: var(--muted); line-height: 1; padding: .2rem; }
+    .modal-body { padding: 1.2rem 1.4rem; display: flex; flex-direction: column; gap: 1rem; }
+    .modal-summary { display: grid; grid-template-columns: 1fr 1fr; gap: .5rem .8rem; background: #f8fafc; border-radius: 12px; padding: 1rem; }
+    .modal-summary .kv-label { font-size: .78rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .4px; }
+    .modal-summary .kv-value { font-size: .95rem; font-weight: 700; color: var(--dark); }
+    .rep-list { display: flex; flex-direction: column; gap: .5rem; max-height: 220px; overflow-y: auto; }
+    .rep-item { background: #f8fafc; border: 1px solid var(--border); border-radius: 10px; padding: .7rem .9rem; display: flex; justify-content: space-between; align-items: flex-start; gap: .5rem; }
+    .rep-item .rep-amount { font-weight: 700; color: var(--primary-dark); white-space: nowrap; }
+    .rep-item .rep-note { font-size: .83rem; color: var(--muted); }
+    .rep-item .rep-date { font-size: .78rem; color: var(--muted); white-space: nowrap; }
+    .rep-form { display: grid; gap: .8rem; }
+    .rep-form label { font-size: .85rem; font-weight: 600; display: block; margin-bottom: .3rem; }
+    .rep-form input, .rep-form textarea { width: 100%; padding: .65rem .8rem; border: 1.5px solid #cbd5e1; border-radius: 9px; font: inherit; font-size: .9rem; outline: none; transition: border-color .15s, box-shadow .15s; }
+    .rep-form input:focus, .rep-form textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(22,163,74,.12); }
+    .rep-form textarea { min-height: 70px; resize: vertical; }
+    .btn-rep-submit { background: var(--primary); color: white; border: none; font: inherit; font-weight: 700; font-size: .9rem; padding: .65rem 1.2rem; border-radius: 9px; cursor: pointer; transition: background .15s; }
+    .btn-rep-submit:hover { background: var(--primary-dark); }
+    .rep-status { font-size: .85rem; font-weight: 600; min-height: 1.1rem; }
+    .rep-status.ok  { color: var(--primary); }
+    .rep-status.err { color: var(--danger); }
+
+    /* ── TYPED-CONFIRM MODAL ── */
+    .confirm-input { width: 100%; padding: .65rem .8rem; border: 1.5px solid #cbd5e1; border-radius: 9px; font: inherit; font-size: .95rem; outline: none; transition: border-color .15s; margin-top: .5rem; }
+    .confirm-input:focus { border-color: var(--danger); box-shadow: 0 0 0 3px rgba(220,38,38,.12); }
+    .confirm-warning { font-size: .9rem; color: var(--muted); line-height: 1.5; }
+    .confirm-warning strong { color: var(--danger); }
+    .btn-confirm-delete { background: var(--danger); color: white; border: none; font: inherit; font-weight: 700; font-size: .9rem; padding: .65rem 1.2rem; border-radius: 9px; cursor: pointer; transition: background .15s; }
+    .btn-confirm-delete:hover { background: var(--danger-dark); }
+    .btn-confirm-delete:disabled { opacity: .4; cursor: not-allowed; }
+    .modal-footer { display: flex; gap: .6rem; justify-content: flex-end; padding-top: .4rem; }
+    .btn-cancel { background: #f1f5f9; color: var(--text); border: none; font: inherit; font-weight: 600; font-size: .9rem; padding: .65rem 1.2rem; border-radius: 9px; cursor: pointer; }
+    .btn-cancel:hover { background: #e2e8f0; }
 
     @media (max-width: 760px) { .filters { grid-template-columns: 1fr; } .stats-grid { grid-template-columns: repeat(2,1fr); } }
     @media (max-width: 480px) { .stats-grid { grid-template-columns: 1fr; } }
@@ -251,14 +302,78 @@ if (empty($_SESSION['admin_logged_in'])) {
 
         <div class="panel-footer">
           <div class="status-msg" id="statusMsg" aria-live="polite"></div>
+          <div class="pagination" id="pagination"></div>
         </div>
       </div>
 
     </div>
   </main>
 
+  <!-- ── REPAYMENT MODAL ────────────────────────────────────────────────── -->
+  <div class="modal-overlay" id="repayModal" role="dialog" aria-modal="true" aria-labelledby="repayModalTitle">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="repayModalTitle">Repayments</h3>
+        <button class="modal-close" id="repayClose" aria-label="Close">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-summary" id="repSummary"></div>
+        <div>
+          <div style="font-size:.85rem;font-weight:700;margin-bottom:.5rem;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;">Payment History</div>
+          <div class="rep-list" id="repList"><p style="color:var(--muted);font-size:.88rem">Loading…</p></div>
+        </div>
+        <div>
+          <div style="font-size:.85rem;font-weight:700;margin-bottom:.6rem;color:var(--dark);">Record New Payment</div>
+          <div class="rep-form">
+            <input type="hidden" id="repLoanId" />
+            <div>
+              <label for="repAmount">Amount (GHS)</label>
+              <input id="repAmount" type="number" min="1" placeholder="e.g. 500" />
+            </div>
+            <div>
+              <label for="repNote">Note (optional)</label>
+              <textarea id="repNote" placeholder="e.g. Cash payment via agent"></textarea>
+            </div>
+            <div style="display:flex;align-items:center;gap:.8rem;flex-wrap:wrap;">
+              <button class="btn-rep-submit" id="repSubmitBtn">Save Payment</button>
+              <div class="rep-status" id="repStatus"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── CLEAR-ALL CONFIRM MODAL ────────────────────────────────────────── -->
+  <div class="modal-overlay" id="clearModal" role="dialog" aria-modal="true" aria-labelledby="clearModalTitle">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="clearModalTitle">Confirm Clear All Data</h3>
+        <button class="modal-close" id="clearClose" aria-label="Close">✕</button>
+      </div>
+      <div class="modal-body">
+        <p class="confirm-warning">
+          This will <strong>permanently delete every application record</strong> from the database.
+          This action cannot be undone.
+        </p>
+        <div>
+          <label for="confirmInput" style="font-size:.88rem;font-weight:600;">
+            Type <strong>DELETE</strong> to confirm:
+          </label>
+          <input class="confirm-input" id="confirmInput" type="text" placeholder="DELETE" autocomplete="off" />
+        </div>
+        <div class="modal-footer">
+          <button class="btn-cancel" id="clearCancelBtn">Cancel</button>
+          <button class="btn-confirm-delete" id="clearConfirmBtn" disabled>Delete Everything</button>
+        </div>
+        <div class="rep-status" id="clearStatus"></div>
+      </div>
+    </div>
+  </div>
+
   <script>
     const CSRF_TOKEN = '<?= htmlspecialchars($_SESSION['csrf_token'] ?? '') ?>';
+    const PAGE_SIZE  = 25;
 
     const els = {
       total:    document.getElementById('totalApplications'),
@@ -269,17 +384,21 @@ if (empty($_SESSION['admin_logged_in'])) {
       pending:  document.getElementById('pendingCount'),
       approved: document.getElementById('approvedCount'),
       rejected: document.getElementById('rejectedCount'),
-      search:   document.getElementById('searchInput'),
+      search:       document.getElementById('searchInput'),
       typeFilter:   document.getElementById('loanTypeFilter'),
       statusFilter: document.getElementById('statusFilter'),
-      tbody:    document.getElementById('applicationsBody'),
-      empty:    document.getElementById('emptyState'),
-      clearBtn: document.getElementById('clearAllBtn'),
-      statusMsg:document.getElementById('statusMsg'),
+      tbody:      document.getElementById('applicationsBody'),
+      empty:      document.getElementById('emptyState'),
+      clearBtn:   document.getElementById('clearAllBtn'),
+      statusMsg:  document.getElementById('statusMsg'),
+      pagination: document.getElementById('pagination'),
     };
 
     let allApplications = [];
+    let currentPage     = 1;
+    let filteredCache   = [];
 
+    // ── Helpers ───────────────────────────────────────────────────────────────
     function fmt(v) { return new Intl.NumberFormat('en-GH').format(v); }
 
     function escapeHTML(str) {
@@ -330,14 +449,43 @@ if (empty($_SESSION['admin_logged_in'])) {
       });
     }
 
-    function renderTable(items) {
+    // ── Pagination ────────────────────────────────────────────────────────────
+    function renderPagination(total) {
+      const pages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+      if (pages <= 1) { els.pagination.innerHTML = ''; return; }
+
+      let html = `<button class="page-btn" onclick="goPage(${currentPage-1})" ${currentPage===1?'disabled':''}>‹</button>`;
+      for (let p = 1; p <= pages; p++) {
+        if (pages > 7 && Math.abs(p - currentPage) > 2 && p !== 1 && p !== pages) {
+          if (p === currentPage - 3 || p === currentPage + 3) html += `<span class="page-info">…</span>`;
+          continue;
+        }
+        html += `<button class="page-btn ${p===currentPage?'active':''}" onclick="goPage(${p})">${p}</button>`;
+      }
+      html += `<button class="page-btn" onclick="goPage(${currentPage+1})" ${currentPage===pages?'disabled':''}>›</button>`;
+      html += `<span class="page-info">${total} records</span>`;
+      els.pagination.innerHTML = html;
+    }
+
+    function goPage(p) {
+      const pages = Math.ceil(filteredCache.length / PAGE_SIZE);
+      currentPage = Math.max(1, Math.min(p, pages));
+      renderTablePage();
+    }
+
+    function renderTablePage() {
+      const items = filteredCache;
       if (!items.length) {
         els.tbody.innerHTML = '';
         els.empty.style.display = 'block';
+        els.pagination.innerHTML = '';
         return;
       }
       els.empty.style.display = 'none';
-      els.tbody.innerHTML = items.map(item => `
+      const start = (currentPage - 1) * PAGE_SIZE;
+      const page  = items.slice(start, start + PAGE_SIZE);
+
+      els.tbody.innerHTML = page.map(item => `
         <tr id="row-${item.id}">
           <td><strong>${escapeHTML(item.fullName)}</strong></td>
           <td>${escapeHTML(item.phone)}</td>
@@ -354,13 +502,23 @@ if (empty($_SESSION['admin_logged_in'])) {
               <button class="btn-approve" onclick="updateStatus(${item.id},'Approved')">✅ Approve</button>
               <button class="btn-reject"  onclick="updateStatus(${item.id},'Rejected')">❌ Reject</button>
               <button class="btn-pending" onclick="updateStatus(${item.id},'Pending')">⏳ Pending</button>
+              <button class="btn-repay"   onclick="openRepayModal(${item.id})">💳 Repayments</button>
             </div>
           </td>
           <td class="date-cell">${escapeHTML(item.submittedAt)}</td>
         </tr>
       `).join('');
+
+      renderPagination(items.length);
     }
 
+    function renderFiltered() {
+      currentPage   = 1;
+      filteredCache = filterApplications(allApplications);
+      renderTablePage();
+    }
+
+    // ── Status update ─────────────────────────────────────────────────────────
     async function updateStatus(id, status) {
       const data = new FormData();
       data.append('id', id);
@@ -370,10 +528,8 @@ if (empty($_SESSION['admin_logged_in'])) {
         const res    = await fetch('api/update_status.php', { method: 'POST', body: data });
         const result = await res.json();
         if (result.success) {
-          // Update badge in place without full reload
           const cell = document.getElementById('status-' + id);
           if (cell) cell.innerHTML = statusBadge(status);
-          // Update local data
           const app = allApplications.find(a => a.id == id);
           if (app) app.status = status;
           setStatus(result.message);
@@ -385,43 +541,159 @@ if (empty($_SESSION['admin_logged_in'])) {
       }
     }
 
+    // ── Load data ─────────────────────────────────────────────────────────────
     async function loadData() {
       const response = await fetch('api/get_applications.php');
       const data     = await response.json();
       if (!response.ok || !data.success) throw new Error(data.message || 'Failed to load');
       allApplications = Array.isArray(data.applications) ? data.applications : [];
 
-      // Compute status counts client-side
       const pending  = allApplications.filter(a => (a.status || 'Pending') === 'Pending').length;
       const approved = allApplications.filter(a => a.status === 'Approved').length;
       const rejected = allApplications.filter(a => a.status === 'Rejected').length;
       const stats = { ...data.stats, pendingCount: pending, approvedCount: approved, rejectedCount: rejected };
 
       renderStats(stats);
-      renderTable(filterApplications(allApplications));
+      renderFiltered();
     }
-
-    function renderFiltered() { renderTable(filterApplications(allApplications)); }
 
     els.search.addEventListener('input', renderFiltered);
     els.typeFilter.addEventListener('change', renderFiltered);
     els.statusFilter.addEventListener('change', renderFiltered);
 
-    els.clearBtn.addEventListener('click', async () => {
-      if (!window.confirm('This will permanently remove all application records. Continue?')) return;
+    // ── Clear-all modal ───────────────────────────────────────────────────────
+    const clearModal      = document.getElementById('clearModal');
+    const confirmInput    = document.getElementById('confirmInput');
+    const clearConfirmBtn = document.getElementById('clearConfirmBtn');
+    const clearStatus     = document.getElementById('clearStatus');
+
+    els.clearBtn.addEventListener('click', () => {
+      confirmInput.value = '';
+      clearConfirmBtn.disabled = true;
+      clearStatus.textContent = '';
+      clearStatus.className = 'rep-status';
+      clearModal.classList.add('open');
+      setTimeout(() => confirmInput.focus(), 50);
+    });
+
+    confirmInput.addEventListener('input', () => {
+      clearConfirmBtn.disabled = confirmInput.value !== 'DELETE';
+    });
+
+    document.getElementById('clearClose').addEventListener('click',    () => clearModal.classList.remove('open'));
+    document.getElementById('clearCancelBtn').addEventListener('click', () => clearModal.classList.remove('open'));
+    clearModal.addEventListener('click', e => { if (e.target === clearModal) clearModal.classList.remove('open'); });
+
+    clearConfirmBtn.addEventListener('click', async () => {
+      if (confirmInput.value !== 'DELETE') return;
+      clearConfirmBtn.disabled = true;
       try {
-        const clearData = new FormData();
-        clearData.append('csrf_token', CSRF_TOKEN);
-        const res  = await fetch('api/clear_applications.php', { method: 'POST', body: clearData });
+        const fd = new FormData();
+        fd.append('csrf_token', CSRF_TOKEN);
+        const res  = await fetch('api/clear_applications.php', { method: 'POST', body: fd });
         const data = await res.json();
         if (!res.ok || !data.success) throw new Error(data.message || 'Failed to clear');
+        clearModal.classList.remove('open');
         await loadData();
         setStatus('All application data has been cleared.');
       } catch (err) {
-        setStatus(err.message || 'Unable to clear data.', true);
+        clearStatus.textContent = err.message || 'Unable to clear data.';
+        clearStatus.className = 'rep-status err';
+        clearConfirmBtn.disabled = false;
       }
     });
 
+    // ── Repayment modal ───────────────────────────────────────────────────────
+    const repayModal   = document.getElementById('repayModal');
+    const repList      = document.getElementById('repList');
+    const repSummary   = document.getElementById('repSummary');
+    const repLoanId    = document.getElementById('repLoanId');
+    const repAmount    = document.getElementById('repAmount');
+    const repNote      = document.getElementById('repNote');
+    const repSubmitBtn = document.getElementById('repSubmitBtn');
+    const repStatus    = document.getElementById('repStatus');
+
+    document.getElementById('repayClose').addEventListener('click', () => repayModal.classList.remove('open'));
+    repayModal.addEventListener('click', e => { if (e.target === repayModal) repayModal.classList.remove('open'); });
+
+    async function openRepayModal(loanId) {
+      repLoanId.value = loanId;
+      repAmount.value = '';
+      repNote.value   = '';
+      repStatus.textContent = '';
+      repStatus.className = 'rep-status';
+      repList.innerHTML = '<p style="color:var(--muted);font-size:.88rem">Loading…</p>';
+      repSummary.innerHTML = '';
+      repayModal.classList.add('open');
+      await refreshRepayments(loanId);
+    }
+
+    async function refreshRepayments(loanId) {
+      try {
+        const res  = await fetch(`api/get_repayments.php?loan_id=${loanId}`);
+        const data = await res.json();
+        if (!data.success) throw new Error(data.message);
+
+        const loan = data.loan;
+        repSummary.innerHTML = `
+          <div><div class="kv-label">Applicant</div><div class="kv-value">${escapeHTML(loan.full_name)}</div></div>
+          <div><div class="kv-label">Loan Type</div><div class="kv-value">${escapeHTML(loan.loan_type)}</div></div>
+          <div><div class="kv-label">Loan Amount</div><div class="kv-value">GHS ${fmt(loan.amount)}</div></div>
+          <div><div class="kv-label">Total Paid</div><div class="kv-value" style="color:var(--primary)">GHS ${fmt(data.totalPaid)}</div></div>
+          <div><div class="kv-label">Outstanding</div><div class="kv-value" style="color:${data.outstanding>0?'var(--danger)':'var(--primary)'}">GHS ${fmt(Math.max(0,data.outstanding))}</div></div>
+        `;
+
+        if (!data.repayments.length) {
+          repList.innerHTML = '<p style="color:var(--muted);font-size:.88rem">No payments recorded yet.</p>';
+          return;
+        }
+        repList.innerHTML = data.repayments.map(r => `
+          <div class="rep-item">
+            <div>
+              <div class="rep-amount">GHS ${fmt(r.amount)}</div>
+              ${r.note ? `<div class="rep-note">${escapeHTML(r.note)}</div>` : ''}
+            </div>
+            <div class="rep-date">${escapeHTML(r.recordedAt)}</div>
+          </div>
+        `).join('');
+      } catch (err) {
+        repList.innerHTML = `<p style="color:var(--danger);font-size:.88rem">${escapeHTML(err.message)}</p>`;
+      }
+    }
+
+    repSubmitBtn.addEventListener('click', async () => {
+      const loanId = repLoanId.value;
+      const amount = repAmount.value.trim();
+      if (!amount || Number(amount) <= 0) {
+        repStatus.textContent = 'Enter a valid amount.';
+        repStatus.className = 'rep-status err';
+        return;
+      }
+      repSubmitBtn.disabled = true;
+      repStatus.textContent = '';
+      try {
+        const fd = new FormData();
+        fd.append('loan_id',    loanId);
+        fd.append('amount',     amount);
+        fd.append('note',       repNote.value.trim());
+        fd.append('csrf_token', CSRF_TOKEN);
+        const res  = await fetch('api/add_repayment.php', { method: 'POST', body: fd });
+        const data = await res.json();
+        if (!data.success) throw new Error(data.message);
+        repAmount.value = '';
+        repNote.value   = '';
+        repStatus.textContent = 'Payment recorded.';
+        repStatus.className = 'rep-status ok';
+        await refreshRepayments(loanId);
+      } catch (err) {
+        repStatus.textContent = err.message || 'Error saving payment.';
+        repStatus.className = 'rep-status err';
+      } finally {
+        repSubmitBtn.disabled = false;
+      }
+    });
+
+    // ── Init ──────────────────────────────────────────────────────────────────
     loadData().catch(err => {
       els.tbody.innerHTML = '';
       els.empty.style.display = 'block';
