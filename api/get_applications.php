@@ -16,8 +16,13 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
 try {
     $pdo = getPDO();
 
+    // Check which optional columns exist (added by run_migration.php)
+    $cols    = $pdo->query("SHOW COLUMNS FROM loan_applications")->fetchAll(PDO::FETCH_COLUMN);
+    $hasNotes = in_array('notes', $cols, true);
+    $notesExpr = $hasNotes ? "COALESCE(notes, '') AS notes," : "'' AS notes,";
+
     $stmt = $pdo->query(
-        'SELECT
+        "SELECT
             id,
             full_name AS fullName,
             phone,
@@ -29,10 +34,10 @@ try {
             amount,
             purpose,
             status,
-            COALESCE(notes, \'\') AS notes,
-            DATE_FORMAT(submitted_at, "%Y-%m-%d %H:%i:%s") AS submittedAt
+            {$notesExpr}
+            DATE_FORMAT(submitted_at, \"%Y-%m-%d %H:%i:%s\") AS submittedAt
          FROM loan_applications
-         ORDER BY submitted_at DESC, id DESC'
+         ORDER BY submitted_at DESC, id DESC"
     );
 
     $rows = $stmt->fetchAll();
