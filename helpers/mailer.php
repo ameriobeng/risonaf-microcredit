@@ -22,9 +22,15 @@ function sendMail(string $to, string $subject, string $body): bool
         return mail($to, $subject, $body, $headers);
     }
 
-    // SMTP via fsockopen (works with Gmail, Mailtrap, etc.)
+    // SMTP via fsockopen.
+    // Port 465 = direct SSL (SMTPS).  Port 587 = plain connect then STARTTLS.
     try {
-        $socket = fsockopen('ssl://' . SMTP_HOST, SMTP_PORT, $errno, $errstr, 10);
+        $useSSL = (SMTP_PORT === 465);
+        $socket = fsockopen(
+            ($useSSL ? 'ssl://' : '') . SMTP_HOST,
+            SMTP_PORT,
+            $errno, $errstr, 15
+        );
         if (!$socket) return false;
 
         $read = function () use ($socket): string {
@@ -40,9 +46,24 @@ function sendMail(string $to, string $subject, string $body): bool
             fputs($socket, $cmd . "\r\n");
         };
 
+        $ehlo = SMTP_FROM ?: gethostname() ?: 'localhost';
+
         $read(); // 220 greeting
-        $send('EHLO ' . (SMTP_FROM ?: 'localhost'));
+        $send('EHLO ' . $ehlo);
         $read();
+
+        // Upgrade to TLS on port 587 via STARTTLS
+        if (!$useSSL) {
+            $send('STARTTLS');
+            $read();
+            if (!stream_socket_enable_crypto($socket, true, STREAM_CRYPTO_METHOD_TLS_CLIENT)) {
+                fclose($socket);
+                return false;
+            }
+            $send('EHLO ' . $ehlo);
+            $read();
+        }
+
         $send('AUTH LOGIN');
         $read();
         $send(base64_encode(SMTP_USER));
