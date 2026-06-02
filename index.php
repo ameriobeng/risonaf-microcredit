@@ -312,16 +312,20 @@
             <div class="calc-field">
               <label for="calcTerm">Repayment Period</label>
               <select id="calcTerm">
-                <option value="3">3 months</option>
-                <option value="6" selected>6 months</option>
+                <option value="3" selected>3 months</option>
+                <option value="6">6 months</option>
                 <option value="12">12 months</option>
                 <option value="18">18 months</option>
                 <option value="24">24 months</option>
               </select>
             </div>
             <div class="calc-field">
-              <label for="calcRate">Monthly Interest Rate (%)</label>
-              <input id="calcRate" type="number" min="0.1" max="30" step="0.1" value="3" />
+              <label for="calcRate">Flat Interest Rate (% of loan amount)</label>
+              <input id="calcRate" type="number" min="0.1" max="100" step="0.1" value="20" />
+            </div>
+            <div class="calc-field">
+              <label for="calcProcFee">Processing Fee (%)</label>
+              <input id="calcProcFee" type="number" min="0" max="20" step="0.1" value="5" />
             </div>
             <button class="btn-apply-amount" id="applyCalcBtn" type="button">Apply for this Amount →</button>
           </div>
@@ -338,6 +342,15 @@
                 <span class="c-val" id="calcPrincipal">—</span>
               </div>
               <div class="calc-row">
+                <span class="c-lbl">Processing Fee (upfront)</span>
+                <span class="c-val" id="calcFee">—</span>
+              </div>
+              <div class="calc-row">
+                <span class="c-lbl">Amount Disbursed</span>
+                <span class="c-val" id="calcDisbursed">—</span>
+              </div>
+              <hr class="calc-hr" />
+              <div class="calc-row">
                 <span class="c-lbl">Total Interest</span>
                 <span class="c-val" id="calcInterest">—</span>
               </div>
@@ -345,7 +358,7 @@
                 <span class="c-lbl">Total Repayable</span>
                 <span class="c-val" id="calcTotal">—</span>
               </div>
-              <p class="calc-disclaimer">* Indicative estimate using a flat monthly interest rate. Your actual rate and schedule will be confirmed at loan approval.</p>
+              <p class="calc-disclaimer">* Estimates based on flat interest on the loan amount. Processing fee is paid upfront and not added to repayments. Your final schedule will be confirmed at approval.</p>
             </div>
           </div>
         </div>
@@ -532,28 +545,29 @@
     const fmtCalc = v => 'GHS ' + new Intl.NumberFormat('en-GH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(v);
 
     function calcLoan() {
-      const amount = parseFloat(document.getElementById('calcAmount').value) || 0;
-      const months = parseInt(document.getElementById('calcTerm').value)    || 6;
-      const rate   = parseFloat(document.getElementById('calcRate').value)   || 3;
+      const amount  = parseFloat(document.getElementById('calcAmount').value)  || 0;
+      const months  = parseInt(document.getElementById('calcTerm').value)      || 3;
+      const rate    = parseFloat(document.getElementById('calcRate').value)    || 20;   // flat % of principal
+      const feeRate = parseFloat(document.getElementById('calcProcFee').value) || 5;   // processing fee %
 
-      if (amount < 100) {
-        ['calcMonthly','calcPrincipal','calcInterest','calcTotal'].forEach(id => {
-          document.getElementById(id).textContent = '—';
-        });
-        return;
-      }
+      const blank = ['calcMonthly','calcPrincipal','calcFee','calcDisbursed','calcInterest','calcTotal'];
+      if (amount < 100) { blank.forEach(id => { document.getElementById(id).textContent = '—'; }); return; }
 
-      const interest = amount * (rate / 100) * months;
-      const total    = amount + interest;
-      const monthly  = total / months;
+      const procFee  = amount * (feeRate / 100);          // 5% of principal, paid upfront
+      const disbursed = amount - procFee;                 // what borrower actually receives
+      const interest  = amount * (rate / 100);            // flat rate on full principal
+      const total     = amount + interest;                // total to repay (excl. fee)
+      const monthly   = total / months;                   // equal monthly instalments
 
-      document.getElementById('calcMonthly').textContent  = fmtCalc(monthly);
+      document.getElementById('calcMonthly').textContent   = fmtCalc(monthly);
       document.getElementById('calcPrincipal').textContent = fmtCalc(amount);
+      document.getElementById('calcFee').textContent       = fmtCalc(procFee);
+      document.getElementById('calcDisbursed').textContent = fmtCalc(disbursed);
       document.getElementById('calcInterest').textContent  = fmtCalc(interest);
       document.getElementById('calcTotal').textContent     = fmtCalc(total);
     }
 
-    ['calcAmount', 'calcTerm', 'calcRate'].forEach(id => {
+    ['calcAmount', 'calcTerm', 'calcRate', 'calcProcFee'].forEach(id => {
       document.getElementById(id).addEventListener('input', calcLoan);
     });
 
