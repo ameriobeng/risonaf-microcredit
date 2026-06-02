@@ -50,6 +50,29 @@ try {
         exit;
     }
 
+    // Fetch repayments for this application
+    $totalPaid   = 0.0;
+    $outstanding = (float)$row['amount'];
+    $repayments  = [];
+
+    try {
+        $repStmt = $pdo->prepare(
+            'SELECT amount, DATE_FORMAT(recorded_at, "%d %b %Y") AS recordedAt
+             FROM repayments WHERE loan_id = ? ORDER BY recorded_at ASC'
+        );
+        $repStmt->execute([$row['id']]);
+        $rawReps    = $repStmt->fetchAll();
+        $repayments = array_map(fn($r) => ['amount' => (float)$r['amount'], 'recordedAt' => $r['recordedAt']], $rawReps);
+        $totalPaid  = (float)array_sum(array_column($rawReps, 'amount'));
+        $outstanding = max(0.0, (float)$row['amount'] - $totalPaid);
+    } catch (Throwable $e) {
+        // repayments table may not exist on older installs
+    }
+
+    $row['totalPaid']   = $totalPaid;
+    $row['outstanding'] = $outstanding;
+    $row['repayments']  = $repayments;
+
     echo json_encode(['success' => true, 'application' => $row]);
 } catch (Throwable $e) {
     http_response_code(500);

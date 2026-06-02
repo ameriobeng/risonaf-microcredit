@@ -27,6 +27,7 @@ const DB_PASS = '';
  * Set NOTIFY_EMAIL to receive an alert on new loan submissions.
  * Leave SMTP_HOST empty to use PHP's built-in mail() function.
  */
+const ADMIN_EMAIL    = '';        // Admin email for password reset e.g. admin@risonaf.com
 const NOTIFY_EMAIL   = '';        // e.g. admin@risonaf.com
 const SMTP_HOST      = '';        // e.g. smtp.gmail.com
 const SMTP_PORT      = 587;

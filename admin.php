@@ -199,7 +199,23 @@ if (empty($_SESSION['admin_logged_in'])) {
     .btn-cancel { background: #f1f5f9; color: var(--text); border: none; font: inherit; font-weight: 600; font-size: .88rem; padding: .6rem 1.15rem; border-radius: 8px; cursor: pointer; }
     .btn-cancel:hover { background: #e2e8f0; }
 
-    @media (max-width: 760px) { .filters { grid-template-columns: 1fr; } .stats-grid { grid-template-columns: repeat(2,1fr); } }
+    /* ── FILTERS ROW 2 ── */
+    .filters-row2 { padding: .6rem 1.2rem; border-bottom: 1px solid var(--border); background: #f8f9fb; display: flex; gap: .75rem; flex-wrap: wrap; align-items: center; }
+    .filter-group { display: flex; align-items: center; gap: .4rem; }
+    .filter-group .fg-label { font-size: .78rem; font-weight: 600; color: var(--muted); white-space: nowrap; }
+    .filter-group input[type="number"], .filter-group input[type="date"] { font-family: inherit; font-size: .83rem; border: 1.5px solid #cdd4df; border-radius: 7px; padding: .46rem .65rem; background: white; color: var(--text); outline: none; transition: border-color .15s, box-shadow .15s; }
+    .filter-group input[type="number"] { width: 110px; }
+    .filter-group input[type="date"]   { width: 148px; }
+    .filter-group input:focus { border-color: var(--navy); box-shadow: 0 0 0 3px rgba(12,35,64,.08); }
+    .filter-sep { font-size: .78rem; color: var(--muted); }
+    .btn-clear-filters { font-family: inherit; font-size: .78rem; font-weight: 600; padding: .44rem .9rem; border-radius: 7px; border: 1.5px solid #cdd4df; background: white; color: var(--muted); cursor: pointer; transition: all .15s; margin-left: auto; }
+    .btn-clear-filters:hover { border-color: var(--navy); color: var(--navy); }
+
+    /* ── PRINT BTN ── */
+    .btn-print-app { background: white; color: var(--muted); font-family: inherit; font-size: .72rem; font-weight: 600; padding: .28rem .6rem; border-radius: 6px; border: 1px solid var(--border); cursor: pointer; transition: all .15s; white-space: nowrap; text-decoration: none; display: inline-flex; align-items: center; gap: .25rem; }
+    .btn-print-app:hover { border-color: var(--navy); color: var(--navy); }
+
+    @media (max-width: 760px) { .filters { grid-template-columns: 1fr; } .stats-grid { grid-template-columns: repeat(2,1fr); } .filters-row2 { flex-direction: column; align-items: flex-start; } .btn-clear-filters { margin-left: 0; } }
     @media (max-width: 480px) { .stats-grid { grid-template-columns: 1fr; } }
   </style>
 </head>
@@ -294,6 +310,22 @@ if (empty($_SESSION['admin_logged_in'])) {
             <option value="Approved">Approved</option>
             <option value="Rejected">Rejected</option>
           </select>
+        </div>
+
+        <div class="filters-row2">
+          <div class="filter-group">
+            <span class="fg-label">Amount (GHS):</span>
+            <input id="amountMin" type="number" min="0" placeholder="Min" title="Minimum amount" />
+            <span class="filter-sep">–</span>
+            <input id="amountMax" type="number" min="0" placeholder="Max" title="Maximum amount" />
+          </div>
+          <div class="filter-group">
+            <span class="fg-label">Submitted:</span>
+            <input id="dateFrom" type="date" title="From date" />
+            <span class="filter-sep">–</span>
+            <input id="dateTo" type="date" title="To date" />
+          </div>
+          <button class="btn-clear-filters" id="clearFiltersBtn" type="button">Clear All Filters</button>
         </div>
 
         <div class="table-wrap">
@@ -485,15 +517,25 @@ if (empty($_SESSION['admin_logged_in'])) {
     function normalize(v) { return (v || '').toString().toLowerCase(); }
 
     function filterApplications(items) {
-      const query  = normalize(els.search.value.trim());
-      const type   = els.typeFilter.value;
-      const status = els.statusFilter.value;
+      const query     = normalize(els.search.value.trim());
+      const type      = els.typeFilter.value;
+      const status    = els.statusFilter.value;
+      const amountMin = parseFloat(document.getElementById('amountMin').value) || 0;
+      const amountMax = parseFloat(document.getElementById('amountMax').value) || Infinity;
+      const dateFrom  = document.getElementById('dateFrom').value;
+      const dateTo    = document.getElementById('dateTo').value;
+
       return items.filter(item => {
         const matchType   = !type   || item.loanType === type;
         const matchStatus = !status || (item.status || 'Pending') === status;
         const blob = [item.fullName, item.phone, item.email, item.location, item.purpose].map(normalize).join(' ');
         const matchQuery  = !query  || blob.includes(query);
-        return matchType && matchStatus && matchQuery;
+        const amount      = Number(item.amount || 0);
+        const matchAmount = amount >= amountMin && amount <= amountMax;
+        const itemDate    = (item.submittedAt || '').substring(0, 10);
+        const matchFrom   = !dateFrom || itemDate >= dateFrom;
+        const matchTo     = !dateTo   || itemDate <= dateTo;
+        return matchType && matchStatus && matchQuery && matchAmount && matchFrom && matchTo;
       });
     }
 
@@ -551,6 +593,7 @@ if (empty($_SESSION['admin_logged_in'])) {
               <button class="btn-reject"  onclick="updateStatus(${item.id},'Rejected')">❌ Reject</button>
               <button class="btn-pending" onclick="updateStatus(${item.id},'Pending')">⏳ Pending</button>
               <button class="btn-repay"   onclick="openRepayModal(${item.id})">💳 Repayments</button>
+              <a class="btn-print-app" href="print_application.php?id=${item.id}" target="_blank">🖨️ Print</a>
             </div>
           </td>
           <td>
@@ -646,6 +689,21 @@ if (empty($_SESSION['admin_logged_in'])) {
     els.search.addEventListener('input', renderFiltered);
     els.typeFilter.addEventListener('change', renderFiltered);
     els.statusFilter.addEventListener('change', renderFiltered);
+
+    ['amountMin', 'amountMax', 'dateFrom', 'dateTo'].forEach(id => {
+      document.getElementById(id).addEventListener('input', renderFiltered);
+    });
+
+    document.getElementById('clearFiltersBtn').addEventListener('click', () => {
+      els.search.value         = '';
+      els.typeFilter.value     = '';
+      els.statusFilter.value   = '';
+      document.getElementById('amountMin').value = '';
+      document.getElementById('amountMax').value = '';
+      document.getElementById('dateFrom').value  = '';
+      document.getElementById('dateTo').value    = '';
+      renderFiltered();
+    });
 
     // ── Clear-all modal ───────────────────────────────────────────────────────
     const clearModal      = document.getElementById('clearModal');

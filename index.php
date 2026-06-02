@@ -146,7 +146,31 @@
     /* ── LOAN BADGE ── */
     .loan-badge { display: inline-block; font-size: .72rem; font-weight: 600; padding: .15rem .55rem; border-radius: 100px; background: var(--navy-light); color: var(--navy); margin-left: .3rem; }
 
-    @media (max-width: 760px) { .hero-inner { grid-template-columns: 1fr; } .hero-card { display: none; } .row { grid-template-columns: 1fr; } .form-card { padding: 1.4rem; } .trust-items { gap: 1rem; } }
+    /* ── CALCULATOR ── */
+    .calc-section { background: var(--navy); padding: 3.5rem 0; }
+    .calc-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; align-items: start; }
+    .calc-left-head { margin-bottom: 1.6rem; }
+    .calc-eyebrow { font-size: .72rem; font-weight: 700; letter-spacing: 1.8px; text-transform: uppercase; color: var(--gold-bright); margin-bottom: .45rem; }
+    .calc-title { font-size: 1.5rem; font-weight: 800; color: white; letter-spacing: -.4px; margin-bottom: .4rem; }
+    .calc-sub { font-size: .88rem; color: rgba(255,255,255,.5); line-height: 1.6; }
+    .calc-field { margin-bottom: 1rem; }
+    .calc-field label { display: block; font-size: .83rem; font-weight: 600; color: rgba(255,255,255,.7); margin-bottom: .38rem; }
+    .calc-field input, .calc-field select { width: 100%; padding: .7rem .85rem; border: 1.5px solid rgba(255,255,255,.15); border-radius: 8px; font: inherit; font-size: .93rem; background: rgba(255,255,255,.08); color: white; outline: none; transition: border-color .15s, box-shadow .15s; }
+    .calc-field input::placeholder { color: rgba(255,255,255,.3); }
+    .calc-field input:focus, .calc-field select:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(184,134,42,.2); }
+    .calc-field select option { background: #0c2340; color: white; }
+    .btn-apply-amount { display: inline-flex; align-items: center; gap: .5rem; margin-top: 1.1rem; background: var(--gold); color: var(--navy); font: inherit; font-weight: 700; font-size: .9rem; padding: .7rem 1.3rem; border: none; border-radius: 8px; cursor: pointer; transition: all .15s; }
+    .btn-apply-amount:hover { background: var(--gold-bright); transform: translateY(-1px); }
+    .calc-results { background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.1); border-radius: 12px; padding: 1.5rem; display: flex; flex-direction: column; gap: .85rem; }
+    .calc-results-title { font-size: .72rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--gold-bright); margin-bottom: .2rem; }
+    .calc-row { display: flex; justify-content: space-between; align-items: center; }
+    .calc-row .c-lbl { font-size: .85rem; color: rgba(255,255,255,.55); }
+    .calc-row .c-val { font-size: 1.05rem; font-weight: 700; color: white; }
+    .calc-row.highlight .c-val { color: var(--gold-bright); font-size: 1.4rem; }
+    .calc-hr { border: none; border-top: 1px solid rgba(255,255,255,.08); }
+    .calc-disclaimer { font-size: .75rem; color: rgba(255,255,255,.3); text-align: center; line-height: 1.55; margin-top: .4rem; }
+
+    @media (max-width: 760px) { .hero-inner { grid-template-columns: 1fr; } .hero-card { display: none; } .row { grid-template-columns: 1fr; } .form-card { padding: 1.4rem; } .trust-items { gap: 1rem; } .calc-inner { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
@@ -264,6 +288,62 @@
             <h3>Quick Processing</h3>
             <p>Decisions within 3 business days. Transparent terms, no hidden fees, and dedicated support throughout.</p>
           </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="calculator" class="calc-section">
+      <div class="container">
+        <div class="calc-inner">
+          <div>
+            <div class="calc-left-head">
+              <div class="calc-eyebrow">Plan Your Loan</div>
+              <div class="calc-title">Repayment Calculator</div>
+              <div class="calc-sub">Estimate your monthly payment before you apply. Adjust the amount, term, and rate to see the breakdown instantly.</div>
+            </div>
+            <div class="calc-field">
+              <label for="calcAmount">Loan Amount (GHS)</label>
+              <input id="calcAmount" type="number" min="100" max="100000" placeholder="e.g. 5,000" value="5000" />
+            </div>
+            <div class="calc-field">
+              <label for="calcTerm">Repayment Period</label>
+              <select id="calcTerm">
+                <option value="3">3 months</option>
+                <option value="6" selected>6 months</option>
+                <option value="12">12 months</option>
+                <option value="18">18 months</option>
+                <option value="24">24 months</option>
+              </select>
+            </div>
+            <div class="calc-field">
+              <label for="calcRate">Monthly Interest Rate (%)</label>
+              <input id="calcRate" type="number" min="0.1" max="30" step="0.1" value="3" />
+            </div>
+            <button class="btn-apply-amount" id="applyCalcBtn" type="button">Apply for this Amount →</button>
+          </div>
+          <div>
+            <div class="calc-results-title">Your Estimate</div>
+            <div class="calc-results">
+              <div class="calc-row highlight">
+                <span class="c-lbl">Monthly Payment</span>
+                <span class="c-val" id="calcMonthly">—</span>
+              </div>
+              <hr class="calc-hr" />
+              <div class="calc-row">
+                <span class="c-lbl">Loan Amount</span>
+                <span class="c-val" id="calcPrincipal">—</span>
+              </div>
+              <div class="calc-row">
+                <span class="c-lbl">Total Interest</span>
+                <span class="c-val" id="calcInterest">—</span>
+              </div>
+              <div class="calc-row">
+                <span class="c-lbl">Total Repayable</span>
+                <span class="c-val" id="calcTotal">—</span>
+              </div>
+              <p class="calc-disclaimer">* Indicative estimate using a flat monthly interest rate. Your actual rate and schedule will be confirmed at loan approval.</p>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -432,6 +512,43 @@
     });
 
     renderSubmissions();
+
+    // ── Loan calculator ───────────────────────────────────────────────────────
+    const fmtCalc = v => 'GHS ' + new Intl.NumberFormat('en-GH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(v);
+
+    function calcLoan() {
+      const amount = parseFloat(document.getElementById('calcAmount').value) || 0;
+      const months = parseInt(document.getElementById('calcTerm').value)    || 6;
+      const rate   = parseFloat(document.getElementById('calcRate').value)   || 3;
+
+      if (amount < 100) {
+        ['calcMonthly','calcPrincipal','calcInterest','calcTotal'].forEach(id => {
+          document.getElementById(id).textContent = '—';
+        });
+        return;
+      }
+
+      const interest = amount * (rate / 100) * months;
+      const total    = amount + interest;
+      const monthly  = total / months;
+
+      document.getElementById('calcMonthly').textContent  = fmtCalc(monthly);
+      document.getElementById('calcPrincipal').textContent = fmtCalc(amount);
+      document.getElementById('calcInterest').textContent  = fmtCalc(interest);
+      document.getElementById('calcTotal').textContent     = fmtCalc(total);
+    }
+
+    ['calcAmount', 'calcTerm', 'calcRate'].forEach(id => {
+      document.getElementById(id).addEventListener('input', calcLoan);
+    });
+
+    document.getElementById('applyCalcBtn').addEventListener('click', () => {
+      const amount = parseFloat(document.getElementById('calcAmount').value);
+      if (amount >= 100) document.getElementById('amount').value = amount;
+      document.getElementById('apply').scrollIntoView({ behavior: 'smooth' });
+    });
+
+    calcLoan();
   </script>
 </body>
 </html>

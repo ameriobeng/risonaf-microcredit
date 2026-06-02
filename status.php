@@ -80,6 +80,25 @@
     .status-pill.Rejected { background: var(--danger-bg);  color: var(--danger); }
     .status-dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; opacity: .7; }
 
+    /* ── REPAYMENTS ── */
+    .result-repay { padding: 1rem 1.2rem; border-top: 1px solid var(--border); }
+    .repay-section-title { font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .6px; color: var(--muted); margin-bottom: .65rem; }
+    .repay-summary { display: flex; gap: 1.8rem; margin-bottom: .8rem; flex-wrap: wrap; }
+    .repay-kv .lbl { font-size: .75rem; color: var(--muted); display: block; margin-bottom: 2px; }
+    .repay-kv .val { font-size: 1rem; font-weight: 700; }
+    .repay-kv .val.green { color: var(--success); }
+    .repay-kv .val.red   { color: var(--danger); }
+    .repay-bar-wrap { display: flex; align-items: center; gap: .7rem; margin-bottom: .9rem; }
+    .repay-bar { flex: 1; height: 7px; background: var(--border); border-radius: 4px; overflow: hidden; }
+    .repay-fill { height: 100%; background: var(--success); border-radius: 4px; transition: width .6s ease; }
+    .repay-pct { font-size: .8rem; font-weight: 700; color: var(--muted); white-space: nowrap; min-width: 60px; text-align: right; }
+    .repay-history-title { font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .6px; color: var(--muted); margin-bottom: .5rem; }
+    .repay-item { display: flex; justify-content: space-between; align-items: center; padding: .42rem 0; border-bottom: 1px solid var(--border); font-size: .85rem; }
+    .repay-item:last-child { border-bottom: none; }
+    .repay-item .r-amount { font-weight: 700; color: var(--success); }
+    .repay-item .r-date   { color: var(--muted); font-size: .8rem; }
+    .repay-none { font-size: .83rem; color: var(--muted); font-style: italic; }
+
     footer { background: var(--navy); color: rgba(255,255,255,.35); text-align: center; padding: 1.2rem 0; font-size: .8rem; }
   </style>
 </head>
@@ -147,6 +166,18 @@
               <span class="val" id="rDate"></span>
             </div>
           </div>
+          <div class="result-repay" id="resultRepay" style="display:none">
+            <div class="repay-section-title">Repayment Summary</div>
+            <div class="repay-summary">
+              <div class="repay-kv"><span class="lbl">Total Paid</span><span class="val green" id="rPaid"></span></div>
+              <div class="repay-kv"><span class="lbl">Outstanding</span><span class="val" id="rOutstanding"></span></div>
+            </div>
+            <div class="repay-bar-wrap">
+              <div class="repay-bar"><div class="repay-fill" id="rProgressBar" style="width:0%"></div></div>
+              <span class="repay-pct" id="rProgressPct">0% repaid</span>
+            </div>
+            <div id="rRepayHistory"></div>
+          </div>
         </div>
       </div>
     </div>
@@ -180,6 +211,31 @@
         document.getElementById('rDate').textContent   = app.submittedAt;
         const s = app.status || 'Pending';
         document.getElementById('rStatus').innerHTML = `<span class="status-pill ${s}"><span class="status-dot"></span>${s}</span>`;
+
+        // Repayment section
+        const repayEl = document.getElementById('resultRepay');
+        if (typeof app.totalPaid !== 'undefined') {
+          document.getElementById('rPaid').textContent = fmt(app.totalPaid);
+          const outEl = document.getElementById('rOutstanding');
+          outEl.textContent = fmt(app.outstanding);
+          outEl.className = 'val ' + (app.outstanding > 0 ? 'red' : 'green');
+          const pct = app.amount > 0 ? Math.min(100, Math.round(app.totalPaid / app.amount * 100)) : 0;
+          document.getElementById('rProgressBar').style.width = pct + '%';
+          document.getElementById('rProgressPct').textContent = pct + '% repaid';
+          const histEl = document.getElementById('rRepayHistory');
+          if (app.repayments && app.repayments.length > 0) {
+            histEl.innerHTML = '<div class="repay-history-title">Payment History</div>'
+              + app.repayments.map(r =>
+                  `<div class="repay-item"><span class="r-amount">${fmt(r.amount)}</span><span class="r-date">${r.recordedAt}</span></div>`
+                ).join('');
+          } else {
+            histEl.innerHTML = '<p class="repay-none">No payments recorded yet.</p>';
+          }
+          repayEl.style.display = 'block';
+        } else {
+          repayEl.style.display = 'none';
+        }
+
         resultEl.classList.add('visible');
       } catch { msgEl.textContent = 'Network error — please try again.'; msgEl.className = 'msg error'; }
       finally { submitBtn.disabled = false; submitBtn.textContent = 'Check Status'; }
