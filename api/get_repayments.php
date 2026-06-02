@@ -23,6 +23,18 @@ if ($loanId <= 0) {
 try {
     $pdo = getPDO();
 
+    // Ensure the repayments table exists (safe to call on every request — IF NOT EXISTS is a no-op)
+    $pdo->exec("
+        CREATE TABLE IF NOT EXISTS repayments (
+            id          INT AUTO_INCREMENT PRIMARY KEY,
+            loan_id     INT NOT NULL,
+            amount      DECIMAL(12,2) NOT NULL,
+            note        VARCHAR(500) DEFAULT NULL,
+            recorded_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            INDEX idx_loan (loan_id)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+    ");
+
     $loanStmt = $pdo->prepare('SELECT id, full_name, loan_type, amount FROM loan_applications WHERE id = ?');
     $loanStmt->execute([$loanId]);
     $loan = $loanStmt->fetch();
@@ -51,5 +63,5 @@ try {
     ]);
 } catch (Throwable $e) {
     http_response_code(500);
-    echo json_encode(['success' => false, 'message' => 'Server error']);
+    echo json_encode(['success' => false, 'message' => $e->getMessage()]);
 }

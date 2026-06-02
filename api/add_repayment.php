@@ -42,6 +42,18 @@ if ($amount <= 0) {
 try {
     $pdo = getPDO();
 
+    // Ensure repayments table exists
+    $pdo->exec("
+        CREATE TABLE IF NOT EXISTS repayments (
+            id          INT AUTO_INCREMENT PRIMARY KEY,
+            loan_id     INT NOT NULL,
+            amount      DECIMAL(12,2) NOT NULL,
+            note        VARCHAR(500) DEFAULT NULL,
+            recorded_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            INDEX idx_loan (loan_id)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+    ");
+
     $check = $pdo->prepare('SELECT id FROM loan_applications WHERE id = ?');
     $check->execute([$loanId]);
     if (!$check->fetch()) {
@@ -62,5 +74,5 @@ try {
     echo json_encode(['success' => true, 'message' => 'Repayment recorded']);
 } catch (Throwable $e) {
     http_response_code(500);
-    echo json_encode(['success' => false, 'message' => 'Server error while recording repayment']);
+    echo json_encode(['success' => false, 'message' => $e->getMessage()]);
 }
