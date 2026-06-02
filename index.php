@@ -127,6 +127,10 @@
     .msg { font-size: .88rem; font-weight: 600; min-height: 1.2rem; padding: .5rem .75rem; border-radius: 7px; }
     .msg.success { background: var(--success-bg); color: var(--success); }
     .msg.error { background: var(--danger-bg); color: var(--danger); }
+    .policy-agree { display: flex; align-items: flex-start; gap: .65rem; padding: .75rem; background: var(--gold-light); border: 1px solid #e8c97a; border-radius: 8px; }
+    .policy-agree input[type="checkbox"] { width: 17px; height: 17px; accent-color: var(--navy); flex-shrink: 0; margin-top: 2px; cursor: pointer; }
+    .policy-agree label { font-size: .87rem; color: var(--text); line-height: 1.55; cursor: pointer; }
+    .policy-agree label a { color: var(--navy); font-weight: 600; text-decoration: underline; }
 
     /* ── SUBMISSIONS ── */
     .submissions-section { margin-top: 1.6rem; padding-top: 1.3rem; border-top: 1px solid var(--border); }
@@ -430,6 +434,13 @@
               <textarea id="purpose" name="purpose" placeholder="Briefly describe how you plan to use this loan…" required></textarea>
             </div>
 
+            <div class="policy-agree">
+              <input type="checkbox" id="policyAgree" name="policyAgree" required />
+              <label for="policyAgree">
+                I have read and agree to the <a href="policy.php" target="_blank">Risonaf Loans Loan Policy</a>, including the interest rate (20%), processing fee (5%), and late repayment fee (5% per month). I confirm that all information provided is accurate and complete.
+              </label>
+            </div>
+
             <button class="submit-btn" type="submit">Submit Application</button>
             <div class="msg" id="formMsg" aria-live="polite"></div>
           </form>
@@ -464,8 +475,12 @@
   </main>
 
   <footer>
-    <div class="container">
+    <div class="container" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.75rem;">
       <span>© 2026 Risonaf Loans Ghana. All rights reserved.</span>
+      <div style="display:flex;gap:1.2rem;">
+        <a href="policy.php" style="color:rgba(255,255,255,.5);text-decoration:none;font-size:.83rem;" onmouseover="this.style.color='rgba(255,255,255,.85)'" onmouseout="this.style.color='rgba(255,255,255,.5)'">Loan Policy</a>
+        <a href="status.php" style="color:rgba(255,255,255,.5);text-decoration:none;font-size:.83rem;" onmouseover="this.style.color='rgba(255,255,255,.85)'" onmouseout="this.style.color='rgba(255,255,255,.5)'">Track Application</a>
+      </div>
     </div>
   </footer>
 
