@@ -307,7 +307,7 @@
             </div>
             <div class="calc-field">
               <label for="calcAmount">Loan Amount (GHS)</label>
-              <input id="calcAmount" type="number" min="100" max="100000" placeholder="e.g. 5,000" value="5000" />
+              <input id="calcAmount" type="number" min="1000" max="2000" placeholder="GHS 1,000 – 2,000" value="2000" />
             </div>
             <div class="calc-field">
               <label for="calcTerm">Repayment Period</label>
@@ -437,8 +437,8 @@
               </div>
               <div class="field">
                 <label for="amount">Amount Requested (GHS)</label>
-                <input id="amount" name="amount" type="number" min="100" max="100000"
-                       placeholder="GHS 100 – 100,000" required />
+                <input id="amount" name="amount" type="number" min="1000" max="2000"
+                       placeholder="GHS 1,000 – 2,000" required />
               </div>
             </div>
 
@@ -551,7 +551,7 @@
       const feeRate = parseFloat(document.getElementById('calcProcFee').value) || 5;   // processing fee %
 
       const blank = ['calcMonthly','calcPrincipal','calcFee','calcDisbursed','calcInterest','calcTotal'];
-      if (amount < 100) { blank.forEach(id => { document.getElementById(id).textContent = '—'; }); return; }
+      if (amount < 1000) { blank.forEach(id => { document.getElementById(id).textContent = '—'; }); return; }
 
       const procFee  = amount * (feeRate / 100);          // 5% of principal, paid upfront
       const disbursed = amount - procFee;                 // what borrower actually receives
@@ -573,7 +573,7 @@
 
     document.getElementById('applyCalcBtn').addEventListener('click', () => {
       const amount = parseFloat(document.getElementById('calcAmount').value);
-      if (amount >= 100) document.getElementById('amount').value = amount;
+      if (amount >= 1000) document.getElementById('amount').value = amount;
       document.getElementById('apply').scrollIntoView({ behavior: 'smooth' });
     });
 
