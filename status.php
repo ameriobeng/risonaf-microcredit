@@ -264,7 +264,8 @@
           const outEl = document.getElementById('rOutstanding');
           outEl.textContent = fmt(app.outstanding);
           outEl.className = 'val ' + (app.outstanding > 0 ? 'red' : 'green');
-          const pct = app.amount > 0 ? Math.min(100, Math.round(app.totalPaid / app.amount * 100)) : 0;
+          const totalRepayable = app.amount * 1.20;
+          const pct = totalRepayable > 0 ? Math.min(100, Math.round(app.totalPaid / totalRepayable * 100)) : 0;
           document.getElementById('rProgressBar').style.width = pct + '%';
           document.getElementById('rProgressPct').textContent = pct + '% repaid';
           const histEl = document.getElementById('rRepayHistory');

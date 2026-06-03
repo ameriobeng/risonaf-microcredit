@@ -75,7 +75,7 @@ try {
         $rawReps    = $repStmt->fetchAll();
         $repayments = array_map(fn($r) => ['amount' => (float)$r['amount'], 'recordedAt' => $r['recordedAt']], $rawReps);
         $totalPaid  = (float)array_sum(array_column($rawReps, 'amount'));
-        $outstanding = max(0.0, (float)$row['amount'] - $totalPaid);
+        $outstanding = max(0.0, (float)$row['amount'] * 1.20 - $totalPaid);
     } catch (Throwable $e) {
         // repayments table may not exist on older installs
     }
