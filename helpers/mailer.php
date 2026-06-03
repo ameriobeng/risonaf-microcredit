@@ -51,7 +51,7 @@ function sendMail(string $to, string $subject, string $body): bool
             fputs($socket, $cmd . "\r\n");
         };
 
-        $ehlo = SMTP_FROM ?: (gethostname() ?: 'localhost');
+        $ehlo = gethostname() ?: 'localhost'; // must be a hostname, not an email address
 
         // --- Greeting ---
         if ($read() !== 220) { fclose($socket); return false; }

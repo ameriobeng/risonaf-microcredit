@@ -61,7 +61,7 @@ echo "OK\n\n";
 
 // ── Step 3: EHLO ────────────────────────────────────────────────────────────
 echo "Step 3: EHLO\n";
-$ehlo = SMTP_FROM ?: (gethostname() ?: 'localhost');
+$ehlo = gethostname() ?: 'localhost';
 $send('EHLO ' . $ehlo);
 $code = $read();
 if ($code !== 250) { echo "FAILED (expected 250, got $code)\n"; fclose($socket); exit; }
