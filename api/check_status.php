@@ -35,7 +35,10 @@ try {
                 loan_type AS loanType,
                 amount,
                 status,
-                DATE_FORMAT(submitted_at, "%Y-%m-%d %H:%i") AS submittedAt
+                DATE_FORMAT(submitted_at, "%Y-%m-%d %H:%i") AS submittedAt,
+                DATE_FORMAT(disbursed_at, "%Y-%m-%d") AS disbursedAt,
+                DATE_FORMAT(due_date, "%Y-%m-%d") AS dueDate,
+                disbursement_method AS disbursementMethod
          FROM loan_applications
          WHERE phone = ? AND id_number = ?
          ORDER BY submitted_at DESC
@@ -72,6 +75,42 @@ try {
     $row['totalPaid']   = $totalPaid;
     $row['outstanding'] = $outstanding;
     $row['repayments']  = $repayments;
+
+    // Build repayment schedule if disbursed
+    $schedule = [];
+    if (!empty($row['disbursedAt']) && !empty($row['dueDate'])) {
+        $totalRepayable  = (float)$row['amount'] * 1.20;
+        $monthlyPayment  = $totalRepayable / 3;
+        $dueDate         = new DateTime($row['dueDate']);
+        $today           = new DateTime('today');
+
+        for ($i = 3; $i >= 1; $i--) {
+            $paymentDate = clone $dueDate;
+            $paymentDate->modify('-' . ($i - 1) . ' months');
+
+            $cumulativeDue = $monthlyPayment * (4 - $i);
+            $paid          = min($totalPaid, $cumulativeDue);
+            $prevDue       = $monthlyPayment * (3 - $i);
+            $thisPaid      = max(0, $paid - $prevDue);
+
+            $dateStr = $paymentDate->format('Y-m-d');
+            if ($thisPaid >= $monthlyPayment * 0.99) {
+                $status = 'Paid';
+            } elseif ($paymentDate < $today) {
+                $status = 'Overdue';
+            } else {
+                $status = 'Upcoming';
+            }
+
+            $schedule[] = [
+                'month'       => 'Month ' . (4 - $i),
+                'dueDate'     => $dateStr,
+                'amount'      => round($monthlyPayment, 2),
+                'status'      => $status,
+            ];
+        }
+    }
+    $row['schedule'] = $schedule;
 
     echo json_encode(['success' => true, 'application' => $row]);
 } catch (Throwable $e) {

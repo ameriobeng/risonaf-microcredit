@@ -1,0 +1,6 @@
+# Deny direct browser access to uploaded files
+# Files are served only through api/download_document.php (admin-authenticated)
+Options -Indexes
+<FilesMatch "\.php$">
+    Require all denied
+</FilesMatch>

@@ -21,6 +21,17 @@ try {
     $hasNotes = in_array('notes', $cols, true);
     $notesExpr = $hasNotes ? "COALESCE(notes, '') AS notes," : "'' AS notes,";
 
+    // Check for new lifecycle columns (added by migration)
+    $hasDisburse = in_array('disbursed_at', $cols, true);
+    $disburseExpr = $hasDisburse
+        ? "disbursement_method AS disbursementMethod,
+           DATE_FORMAT(disbursed_at, \"%Y-%m-%d\") AS disbursedAt,
+           DATE_FORMAT(due_date, \"%Y-%m-%d\") AS dueDate,"
+        : "NULL AS disbursementMethod, NULL AS disbursedAt, NULL AS dueDate,";
+
+    $hasIdDoc = in_array('id_document', $cols, true);
+    $idDocExpr = $hasIdDoc ? "id_document AS idDocument," : "NULL AS idDocument,";
+
     $stmt = $pdo->query(
         "SELECT
             id,
@@ -35,6 +46,8 @@ try {
             purpose,
             status,
             {$notesExpr}
+            {$disburseExpr}
+            {$idDocExpr}
             DATE_FORMAT(submitted_at, \"%Y-%m-%d %H:%i:%s\") AS submittedAt
          FROM loan_applications
          ORDER BY submitted_at DESC, id DESC"

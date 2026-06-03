@@ -78,6 +78,13 @@ try {
         sendMail($app['email'], "Loan Application #{$id} — Status: {$status}", $body);
     }
 
+    // Audit log
+    try {
+        $admin = $_SESSION['admin_user'] ?? 'admin';
+        $pdo->prepare('INSERT INTO audit_log (loan_id, action, details, admin_user) VALUES (?, ?, ?, ?)')
+            ->execute([$id, 'Status Updated', "Changed to: {$status}", $admin]);
+    } catch (Throwable) {}
+
     echo json_encode(['success' => true, 'message' => "Application marked as {$status}"]);
 } catch (Throwable $e) {
     http_response_code(500);

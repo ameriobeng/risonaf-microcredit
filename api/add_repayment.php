@@ -71,6 +71,36 @@ try {
         ':note'    => $note !== '' ? $note : null,
     ]);
 
+    // Auto-update lifecycle status based on total paid
+    try {
+        $loanStmt = $pdo->prepare('SELECT amount, status FROM loan_applications WHERE id = ?');
+        $loanStmt->execute([$loanId]);
+        $loanRow = $loanStmt->fetch();
+
+        if ($loanRow) {
+            $totalRepayable = (float)$loanRow['amount'] * 1.20;
+            $paidStmt       = $pdo->prepare('SELECT COALESCE(SUM(amount),0) FROM repayments WHERE loan_id = ?');
+            $paidStmt->execute([$loanId]);
+            $totalPaid  = (float)$paidStmt->fetchColumn();
+            $newStatus  = $loanRow['status'];
+
+            if ($loanRow['status'] === 'Disbursed') $newStatus = 'Repaying';
+            if ($totalPaid >= $totalRepayable)        $newStatus = 'Completed';
+
+            if ($newStatus !== $loanRow['status']) {
+                $pdo->prepare('UPDATE loan_applications SET status = ? WHERE id = ?')
+                    ->execute([$newStatus, $loanId]);
+            }
+        }
+    } catch (Throwable) {}
+
+    // Audit log
+    try {
+        $admin = $_SESSION['admin_user'] ?? 'admin';
+        $pdo->prepare('INSERT INTO audit_log (loan_id, action, details, admin_user) VALUES (?, ?, ?, ?)')
+            ->execute([$loanId, 'Repayment Recorded', 'GHS ' . number_format($amount, 2), $admin]);
+    } catch (Throwable) {}
+
     echo json_encode(['success' => true, 'message' => 'Repayment recorded']);
 } catch (Throwable $e) {
     http_response_code(500);

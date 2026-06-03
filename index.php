@@ -131,6 +131,10 @@
     .policy-agree input[type="checkbox"] { width: 17px; height: 17px; accent-color: var(--navy); flex-shrink: 0; margin-top: 2px; cursor: pointer; }
     .policy-agree label { font-size: .87rem; color: var(--text); line-height: 1.55; cursor: pointer; }
     .policy-agree label a { color: var(--navy); font-weight: 600; text-decoration: underline; }
+    .upload-field label { display: block; font-size: .84rem; font-weight: 600; color: var(--text); margin-bottom: .38rem; }
+    .upload-field label span { font-weight: 400; color: var(--muted); font-size: .8rem; }
+    .upload-field input[type="file"] { width: 100%; padding: .6rem .85rem; border: 1.5px dashed #cdd4df; border-radius: 8px; font: inherit; font-size: .88rem; background: var(--light); color: var(--text); cursor: pointer; }
+    .upload-field input[type="file"]:focus { border-color: var(--navy); outline: none; }
 
     /* ── SUBMISSIONS ── */
     .submissions-section { margin-top: 1.6rem; padding-top: 1.3rem; border-top: 1px solid var(--border); }
@@ -382,7 +386,7 @@
             </div>
           </div>
 
-          <form id="loanForm">
+          <form id="loanForm" enctype="multipart/form-data">
             <div class="row">
               <div class="field">
                 <label for="fullName">Full Name</label>
@@ -445,6 +449,11 @@
             <div class="field">
               <label for="purpose">Purpose of Loan</label>
               <textarea id="purpose" name="purpose" placeholder="Briefly describe how you plan to use this loan…" required></textarea>
+            </div>
+
+            <div class="field upload-field">
+              <label for="idDocument">Ghana ID Document <span>(Optional — JPG, PNG or PDF, max 3MB)</span></label>
+              <input id="idDocument" name="idDocument" type="file" accept=".jpg,.jpeg,.png,.pdf" />
             </div>
 
             <div class="policy-agree">

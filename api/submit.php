@@ -128,6 +128,27 @@ try {
 
     $newId = (int)$pdo->lastInsertId();
 
+    // ── Document upload (optional) ────────────────────────────────────────────
+    if (!empty($_FILES['idDocument']['name']) && $_FILES['idDocument']['error'] === UPLOAD_ERR_OK) {
+        $allowedMimes = ['image/jpeg', 'image/png', 'application/pdf'];
+        $maxSize      = 3 * 1024 * 1024; // 3 MB
+        $fileSize     = $_FILES['idDocument']['size'];
+        $fileMime     = mime_content_type($_FILES['idDocument']['tmp_name']);
+        $origExt      = strtolower(pathinfo($_FILES['idDocument']['name'], PATHINFO_EXTENSION));
+        $allowedExts  = ['jpg', 'jpeg', 'png', 'pdf'];
+
+        if (in_array($fileMime, $allowedMimes, true) && in_array($origExt, $allowedExts, true) && $fileSize <= $maxSize) {
+            $uploadDir = __DIR__ . '/../uploads/';
+            if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
+            $filename = $newId . '_id_' . bin2hex(random_bytes(6)) . '.' . $origExt;
+            if (move_uploaded_file($_FILES['idDocument']['tmp_name'], $uploadDir . $filename)) {
+                $pdo->prepare('UPDATE loan_applications SET id_document = ? WHERE id = ?')
+                    ->execute([$filename, $newId]);
+            }
+        }
+        // Silently skip invalid uploads — don't fail the whole submission
+    }
+
     // Record this submission for rate limiting
     try {
         $pdo->prepare("INSERT INTO rate_limits (ip) VALUES (?)")->execute([$ip]);
