@@ -215,6 +215,84 @@ if (empty($_SESSION['admin_logged_in'])) {
     .btn-print-app { background: white; color: var(--muted); font-family: inherit; font-size: .72rem; font-weight: 600; padding: .28rem .6rem; border-radius: 6px; border: 1px solid var(--border); cursor: pointer; transition: all .15s; white-space: nowrap; text-decoration: none; display: inline-flex; align-items: center; gap: .25rem; }
     .btn-print-app:hover { border-color: var(--navy); color: var(--navy); }
 
+    /* ── NEW STATUS BADGES ── */
+    .status-disbursed { background: #e0f2fe; color: #0369a1; }
+    .status-repaying  { background: #f0fdf4; color: #16a34a; }
+    .status-completed { background: #dcfce7; color: #15803d; font-weight: 800; }
+    .status-defaulted { background: #fef2f2; color: #dc2626; }
+
+    /* ── OVERDUE ROW ── */
+    tr.overdue-row td { background: #fff5f5 !important; }
+
+    /* ── BULK ACTIONS BAR ── */
+    .bulk-bar { display: none; padding: .65rem 1.2rem; background: var(--navy); border-bottom: 1px solid rgba(255,255,255,.1); align-items: center; gap: .75rem; flex-wrap: wrap; }
+    .bulk-bar.visible { display: flex; }
+    .bulk-count { font-size: .88rem; font-weight: 700; color: white; }
+    .btn-bulk { font-family: inherit; font-size: .8rem; font-weight: 700; padding: .38rem .85rem; border-radius: 7px; border: none; cursor: pointer; transition: all .15s; }
+    .btn-bulk-approve { background: #22c55e; color: white; }
+    .btn-bulk-reject  { background: #ef4444; color: white; }
+    .btn-bulk-pending { background: rgba(255,255,255,.2); color: white; }
+    .btn-bulk-cancel  { background: transparent; color: rgba(255,255,255,.6); border: 1px solid rgba(255,255,255,.2); }
+    .btn-bulk:hover { opacity: .85; }
+    .select-col { width: 36px; text-align: center; }
+    .row-checkbox { width: 15px; height: 15px; cursor: pointer; accent-color: var(--navy); }
+    .select-all-chk { width: 15px; height: 15px; cursor: pointer; accent-color: var(--gold); }
+
+    /* ── DISBURSE BTN ── */
+    .btn-disburse { background: #e0f2fe; color: #0369a1; font-family: inherit; font-size: .72rem; font-weight: 700; padding: .28rem .6rem; border-radius: 6px; border: 1px solid #bae6fd; cursor: pointer; transition: all .15s; white-space: nowrap; }
+    .btn-disburse:hover { background: #bae6fd; }
+
+    /* ── DOCUMENT BTN ── */
+    .btn-doc { background: #fdf5e4; color: #7c5a0a; font-family: inherit; font-size: .72rem; font-weight: 700; padding: .28rem .6rem; border-radius: 6px; border: 1px solid #e8c97a; cursor: pointer; transition: all .15s; white-space: nowrap; text-decoration: none; }
+    .btn-doc:hover { background: #fde8a0; }
+
+    /* ── FINANCIAL PANEL ── */
+    .fin-panel { background: white; border: 1px solid var(--border); border-radius: 12px; padding: 1.2rem; box-shadow: 0 2px 10px rgba(12,35,64,.05); margin-bottom: 1rem; }
+    .fin-panel-header { font-size: .9rem; font-weight: 700; color: var(--navy); margin-bottom: 1rem; display: flex; align-items: center; justify-content: space-between; }
+    .fin-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: .85rem; }
+    .fin-card { background: var(--light); border: 1px solid var(--border); border-radius: 9px; padding: .9rem 1rem; }
+    .fin-card .f-label { font-size: .72rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .6px; margin-bottom: .3rem; }
+    .fin-card .f-value { font-size: 1.3rem; font-weight: 800; color: var(--navy); letter-spacing: -.4px; }
+    .fin-card .f-value.danger { color: var(--danger); }
+    .fin-card .f-value.success { color: var(--success); }
+
+    /* ── AUDIT LOG PANEL ── */
+    .audit-panel { background: white; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; box-shadow: 0 2px 10px rgba(12,35,64,.05); margin-top: 1rem; }
+    .audit-panel-header { padding: .9rem 1.2rem; border-bottom: 1px solid var(--border); background: #fafbfd; display: flex; align-items: center; justify-content: space-between; }
+    .audit-panel-header h2 { font-size: .97rem; font-weight: 700; color: var(--navy); }
+    .audit-list { max-height: 340px; overflow-y: auto; }
+    .audit-item { display: grid; grid-template-columns: auto 1fr auto; gap: .5rem 1rem; align-items: start; padding: .65rem 1.2rem; border-bottom: 1px solid #edf0f5; font-size: .85rem; }
+    .audit-item:last-child { border-bottom: none; }
+    .audit-action { font-weight: 700; color: var(--navy); white-space: nowrap; }
+    .audit-detail { color: var(--muted); }
+    .audit-loan  { font-size: .75rem; color: var(--gold); font-weight: 600; white-space: nowrap; }
+    .audit-time  { font-size: .75rem; color: var(--muted); white-space: nowrap; grid-column: 3; }
+    .audit-empty { padding: 1.5rem; text-align: center; color: var(--muted); font-size: .88rem; }
+
+    /* ── DARK MODE ── */
+    body.dark { --light: #0f172a; --card: #1e293b; --text: #e2e8f0; --muted: #94a3b8; --border: #334155; background: var(--light); color: var(--text); }
+    body.dark .stat-card, body.dark .panel, body.dark .chart-panel, body.dark .fin-panel, body.dark .audit-panel, body.dark .modal { background: #1e293b; border-color: #334155; }
+    body.dark .panel-header, body.dark .audit-panel-header { background: #162032; border-color: #334155; }
+    body.dark .panel-footer, body.dark .filters, body.dark .filters-row2 { background: #162032; border-color: #334155; }
+    body.dark th { background: #162032; color: #94a3b8; border-color: #334155; }
+    body.dark td { border-color: #1e293b; color: #e2e8f0; }
+    body.dark tr:hover td { background: #1a2840 !important; }
+    body.dark tr.overdue-row td { background: #2d1515 !important; }
+    body.dark .filters input, body.dark .filters select, body.dark .filters-row2 input, body.dark .filters-row2 input[type="number"], body.dark .filters-row2 input[type="date"] { background: #1e293b; color: #e2e8f0; border-color: #334155; }
+    body.dark .fin-card { background: #162032; border-color: #334155; }
+    body.dark .audit-item { border-color: #334155; }
+    body.dark .stat-value { color: #e2e8f0; }
+    body.dark .modal-header { background: #162032; border-color: #334155; }
+    body.dark .modal-summary { background: #162032; border-color: #334155; }
+    body.dark .rep-item { background: #162032; border-color: #334155; }
+    .btn-dark-toggle { background: rgba(255,255,255,.1); color: rgba(255,255,255,.75); border: 1px solid rgba(255,255,255,.2); font-family: inherit; font-size: .8rem; font-weight: 600; padding: .44rem .8rem; border-radius: 7px; cursor: pointer; transition: all .15s; }
+    .btn-dark-toggle:hover { background: rgba(255,255,255,.18); color: white; }
+    .btn-reminder { background: rgba(184,134,42,.2); color: var(--gold-bright); border: 1px solid rgba(184,134,42,.3); font-family: inherit; font-size: .84rem; font-weight: 600; padding: .5rem .9rem; border-radius: 7px; cursor: pointer; transition: all .15s; }
+    .btn-reminder:hover { background: rgba(184,134,42,.35); }
+    .due-date-cell { font-size: .8rem; white-space: nowrap; }
+    .due-date-cell.overdue { color: var(--danger); font-weight: 700; }
+    .due-date-cell.soon    { color: #d97706; font-weight: 600; }
+
     @media (max-width: 760px) { .filters { grid-template-columns: 1fr; } .stats-grid { grid-template-columns: repeat(2,1fr); } .filters-row2 { flex-direction: column; align-items: flex-start; } .btn-clear-filters { margin-left: 0; } }
     @media (max-width: 480px) { .stats-grid { grid-template-columns: 1fr; } }
   </style>
@@ -233,6 +311,8 @@ if (empty($_SESSION['admin_logged_in'])) {
       <div class="header-actions">
         <a class="btn btn-ghost" href="index.php">Public Site</a>
         <a class="btn btn-ghost" href="settings.php">Settings</a>
+        <button class="btn-reminder" id="sendRemindersBtn" type="button">📧 Send Reminders</button>
+        <button class="btn-dark-toggle" id="darkToggleBtn" type="button">🌙 Dark</button>
         <a class="btn btn-ghost" href="api/logout.php">Sign Out</a>
         <button class="btn btn-danger" id="clearAllBtn" type="button">Clear All</button>
       </div>
@@ -275,11 +355,37 @@ if (empty($_SESSION['admin_logged_in'])) {
           <div class="stat-label">Rejected</div>
           <div class="stat-value" id="rejectedCount">—</div>
         </div>
+        <div class="stat-card c-blue">
+          <div class="stat-label">Disbursed</div>
+          <div class="stat-value" id="disbursedCount">—</div>
+        </div>
+        <div class="stat-card c-teal">
+          <div class="stat-label">Repaying</div>
+          <div class="stat-value" id="repayingCount">—</div>
+        </div>
+        <div class="stat-card c-green">
+          <div class="stat-label">Completed</div>
+          <div class="stat-value" id="completedCount">—</div>
+        </div>
+        <div class="stat-card c-red">
+          <div class="stat-label">Overdue</div>
+          <div class="stat-value" id="overdueCount" style="color:var(--danger)">—</div>
+        </div>
       </div>
 
       <div class="chart-panel">
         <div class="chart-header">📊 Applications — Last 6 Months</div>
         <div class="chart-wrap"><canvas id="appChart"></canvas></div>
+      </div>
+
+      <div class="fin-panel">
+        <div class="fin-panel-header">💰 Financial Summary</div>
+        <div class="fin-grid">
+          <div class="fin-card"><div class="f-label">Total Disbursed</div><div class="f-value" id="finDisbursed">—</div></div>
+          <div class="fin-card"><div class="f-label">Total Collected</div><div class="f-value success" id="finCollected">—</div></div>
+          <div class="fin-card"><div class="f-label">Outstanding</div><div class="f-value" id="finOutstanding">—</div></div>
+          <div class="fin-card"><div class="f-label">Overdue Amount</div><div class="f-value danger" id="finOverdue">—</div></div>
+        </div>
       </div>
 
       <div class="panel">
@@ -328,10 +434,19 @@ if (empty($_SESSION['admin_logged_in'])) {
           <button class="btn-clear-filters" id="clearFiltersBtn" type="button">Clear All Filters</button>
         </div>
 
+        <div class="bulk-bar" id="bulkBar">
+          <span class="bulk-count" id="bulkCount">0 selected</span>
+          <button class="btn-bulk btn-bulk-approve" onclick="executeBulk('Approved')">✅ Approve All</button>
+          <button class="btn-bulk btn-bulk-reject"  onclick="executeBulk('Rejected')">❌ Reject All</button>
+          <button class="btn-bulk btn-bulk-pending" onclick="executeBulk('Pending')">⏳ Set Pending</button>
+          <button class="btn-bulk btn-bulk-cancel"  onclick="clearSelection()">✕ Cancel</button>
+        </div>
+
         <div class="table-wrap">
           <table>
             <thead>
               <tr>
+                <th class="select-col"><input type="checkbox" class="select-all-chk" id="selectAll" title="Select all" /></th>
                 <th>Applicant</th>
                 <th>Phone</th>
                 <th>Email</th>
@@ -342,8 +457,10 @@ if (empty($_SESSION['admin_logged_in'])) {
                 <th>Amount (GHS)</th>
                 <th>Purpose</th>
                 <th>Status</th>
+                <th>Due Date</th>
                 <th>Actions</th>
                 <th>Notes</th>
+                <th>Doc</th>
                 <th>Submitted</th>
               </tr>
             </thead>
@@ -358,6 +475,16 @@ if (empty($_SESSION['admin_logged_in'])) {
         <div class="panel-footer">
           <div class="status-msg" id="statusMsg" aria-live="polite"></div>
           <div class="pagination" id="pagination"></div>
+        </div>
+      </div>
+
+      <div class="audit-panel">
+        <div class="audit-panel-header">
+          <h2>📋 Activity Log</h2>
+          <button class="btn-export" onclick="loadAuditLog()" style="font-size:.78rem;padding:.38rem .7rem">↻ Refresh</button>
+        </div>
+        <div class="audit-list" id="auditList">
+          <div class="audit-empty">Loading…</div>
         </div>
       </div>
 
@@ -423,6 +550,41 @@ if (empty($_SESSION['admin_logged_in'])) {
     </div>
   </div>
 
+  <!-- ── DISBURSEMENT MODAL ───────────────────────────────────────────────── -->
+  <div class="modal-overlay" id="disburseModal" role="dialog" aria-modal="true" aria-labelledby="disburseModalTitle">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="disburseModalTitle">Disburse Loan</h3>
+        <button class="modal-close" id="disburseClose" aria-label="Close">✕</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size:.85rem;color:var(--muted)">Record the disbursement method and set the repayment due date.</p>
+        <input type="hidden" id="disburseLoanId" />
+        <div class="rep-form">
+          <div>
+            <label for="disburseMethod">Disbursement Method</label>
+            <select id="disburseMethod" style="width:100%;padding:.62rem .8rem;border:1.5px solid #cdd4df;border-radius:8px;font:inherit;font-size:.88rem;outline:none;">
+              <option value="">— Select method —</option>
+              <option>Mobile Money (MTN)</option>
+              <option>Mobile Money (Vodafone)</option>
+              <option>Mobile Money (AirtelTigo)</option>
+              <option>Cash</option>
+              <option>Bank Transfer</option>
+            </select>
+          </div>
+          <div>
+            <label for="disburseDueDate">Repayment Due Date</label>
+            <input id="disburseDueDate" type="date" />
+          </div>
+          <div style="display:flex;align-items:center;gap:.8rem;flex-wrap:wrap;">
+            <button class="btn-rep-submit" id="disburseSubmitBtn">Mark as Disbursed</button>
+            <div class="rep-status" id="disburseStatus"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- ── CLEAR-ALL CONFIRM MODAL ────────────────────────────────────────── -->
   <div class="modal-overlay" id="clearModal" role="dialog" aria-modal="true" aria-labelledby="clearModalTitle">
     <div class="modal">
@@ -455,14 +617,14 @@ if (empty($_SESSION['admin_logged_in'])) {
     const PAGE_SIZE  = 25;
 
     const els = {
-      total:    document.getElementById('totalApplications'),
-      amount:   document.getElementById('totalAmount'),
-      personal: document.getElementById('personalCount'),
-      business: document.getElementById('businessCount'),
-      group:    document.getElementById('groupCount'),
-      pending:  document.getElementById('pendingCount'),
-      approved: document.getElementById('approvedCount'),
-      rejected: document.getElementById('rejectedCount'),
+      total:     document.getElementById('totalApplications'),
+      amount:    document.getElementById('totalAmount'),
+      personal:  document.getElementById('personalCount'),
+      business:  document.getElementById('businessCount'),
+      group:     document.getElementById('groupCount'),
+      pending:   document.getElementById('pendingCount'),
+      approved:  document.getElementById('approvedCount'),
+      rejected:  document.getElementById('rejectedCount'),
       search:       document.getElementById('searchInput'),
       typeFilter:   document.getElementById('loanTypeFilter'),
       statusFilter: document.getElementById('statusFilter'),
@@ -493,8 +655,29 @@ if (empty($_SESSION['admin_logged_in'])) {
     }
 
     function statusBadge(status) {
-      const map = { 'Pending': 'status-pending', 'Approved': 'status-approved', 'Rejected': 'status-rejected' };
+      const map = {
+        'Pending':   'status-pending',
+        'Approved':  'status-approved',
+        'Rejected':  'status-rejected',
+        'Disbursed': 'status-disbursed',
+        'Repaying':  'status-repaying',
+        'Completed': 'status-completed',
+        'Defaulted': 'status-defaulted',
+      };
       return `<span class="status-badge ${map[status] || 'status-pending'}">${escapeHTML(status || 'Pending')}</span>`;
+    }
+
+    function dueDateCell(item) {
+      if (!item.dueDate) return '<span style="color:var(--muted);font-size:.75rem">—</span>';
+      const today   = new Date(); today.setHours(0,0,0,0);
+      const due     = new Date(item.dueDate);
+      const diffMs  = due - today;
+      const diffDays = Math.round(diffMs / 86400000);
+      let cls = 'due-date-cell';
+      let label = item.dueDate;
+      if (diffDays < 0)      { cls += ' overdue'; label += ` (${Math.abs(diffDays)}d overdue)`; }
+      else if (diffDays <= 7) { cls += ' soon';    label += ` (${diffDays}d)`; }
+      return `<span class="${cls}">${escapeHTML(label)}</span>`;
     }
 
     function setStatus(msg, isError = false) {
@@ -503,7 +686,7 @@ if (empty($_SESSION['admin_logged_in'])) {
       if (msg) setTimeout(() => { if (els.statusMsg.textContent === msg) els.statusMsg.textContent = ''; }, 3000);
     }
 
-    function renderStats(stats) {
+    function renderStats(stats, apps) {
       els.total.textContent    = stats.totalApplications ?? 0;
       els.amount.textContent   = fmt(Number(stats.totalAmount ?? 0));
       els.personal.textContent = stats.personalCount ?? 0;
@@ -512,6 +695,18 @@ if (empty($_SESSION['admin_logged_in'])) {
       els.pending.textContent  = stats.pendingCount  ?? 0;
       els.approved.textContent = stats.approvedCount ?? 0;
       els.rejected.textContent = stats.rejectedCount ?? 0;
+
+      // Lifecycle counts
+      const set = s => apps.filter(a => a.status === s).length;
+      document.getElementById('disbursedCount').textContent = set('Disbursed');
+      document.getElementById('repayingCount').textContent  = set('Repaying');
+      document.getElementById('completedCount').textContent = set('Completed');
+
+      // Overdue count
+      const today = new Date(); today.setHours(0,0,0,0);
+      const overdue = apps.filter(a => a.dueDate && new Date(a.dueDate) < today
+        && !['Completed','Rejected','Defaulted'].includes(a.status)).length;
+      document.getElementById('overdueCount').textContent = overdue;
     }
 
     function normalize(v) { return (v || '').toString().toLowerCase(); }
@@ -575,8 +770,13 @@ if (empty($_SESSION['admin_logged_in'])) {
       const start = (currentPage - 1) * PAGE_SIZE;
       const page  = items.slice(start, start + PAGE_SIZE);
 
+      const today = new Date(); today.setHours(0,0,0,0);
+      const isOverdue = item => item.dueDate && new Date(item.dueDate) < today
+        && !['Completed','Rejected','Defaulted'].includes(item.status);
+
       els.tbody.innerHTML = page.map(item => `
-        <tr id="row-${item.id}">
+        <tr id="row-${item.id}" class="${isOverdue(item) ? 'overdue-row' : ''}">
+          <td class="select-col"><input type="checkbox" class="row-checkbox" data-id="${item.id}" /></td>
           <td><strong>${escapeHTML(item.fullName)}</strong></td>
           <td>${escapeHTML(item.phone)}</td>
           <td>${escapeHTML(item.email)}</td>
@@ -587,12 +787,14 @@ if (empty($_SESSION['admin_logged_in'])) {
           <td class="amount-cell">${fmt(Number(item.amount || 0))}</td>
           <td>${escapeHTML(item.purpose)}</td>
           <td id="status-${item.id}">${statusBadge(item.status)}</td>
+          <td>${dueDateCell(item)}</td>
           <td>
             <div class="action-btns">
               <button class="btn-approve" onclick="updateStatus(${item.id},'Approved')">✅ Approve</button>
               <button class="btn-reject"  onclick="updateStatus(${item.id},'Rejected')">❌ Reject</button>
               <button class="btn-pending" onclick="updateStatus(${item.id},'Pending')">⏳ Pending</button>
-              <button class="btn-repay"   onclick="openRepayModal(${item.id})">💳 Repayments</button>
+              ${item.status === 'Approved' ? `<button class="btn-disburse" onclick="openDisburseModal(${item.id})">🏦 Disburse</button>` : ''}
+              <button class="btn-repay" onclick="openRepayModal(${item.id})">💳 Repayments</button>
               <a class="btn-print-app" href="print_application.php?id=${item.id}" target="_blank">🖨️ Print</a>
             </div>
           </td>
@@ -603,9 +805,18 @@ if (empty($_SESSION['admin_logged_in'])) {
               ${item.notes ? '📝' : '➕'} Notes
             </button>
           </td>
+          <td>${item.idDocument
+            ? `<a class="btn-doc" href="api/download_document.php?id=${item.id}" target="_blank">📎 View</a>`
+            : '<span style="color:var(--muted);font-size:.75rem">—</span>'}</td>
           <td class="date-cell">${escapeHTML(item.submittedAt)}</td>
         </tr>
       `).join('');
+
+      // Row checkbox listeners
+      document.querySelectorAll('.row-checkbox').forEach(cb => {
+        cb.addEventListener('change', updateBulkBar);
+      });
+      document.getElementById('selectAll').checked = false;
 
       renderPagination(items.length);
     }
@@ -671,9 +882,12 @@ if (empty($_SESSION['admin_logged_in'])) {
 
     // ── Load data ─────────────────────────────────────────────────────────────
     async function loadData() {
-      const response = await fetch('api/get_applications.php');
-      const data     = await response.json();
-      if (!response.ok || !data.success) throw new Error(data.message || 'Failed to load');
+      const [appRes, finRes] = await Promise.all([
+        fetch('api/get_applications.php'),
+        fetch('api/get_financial_summary.php'),
+      ]);
+      const data = await appRes.json();
+      if (!appRes.ok || !data.success) throw new Error(data.message || 'Failed to load');
       allApplications = Array.isArray(data.applications) ? data.applications : [];
 
       const pending  = allApplications.filter(a => (a.status || 'Pending') === 'Pending').length;
@@ -681,9 +895,23 @@ if (empty($_SESSION['admin_logged_in'])) {
       const rejected = allApplications.filter(a => a.status === 'Rejected').length;
       const stats = { ...data.stats, pendingCount: pending, approvedCount: approved, rejectedCount: rejected };
 
-      renderStats(stats);
+      renderStats(stats, allApplications);
       renderFiltered();
       if (Array.isArray(data.chart) && data.chart.length) renderChart(data.chart);
+
+      // Financial summary
+      if (finRes.ok) {
+        const fin = await finRes.json();
+        if (fin.success && fin.data) {
+          document.getElementById('finDisbursed').textContent  = 'GHS ' + fmt(fin.data.totalDisbursed);
+          document.getElementById('finCollected').textContent  = 'GHS ' + fmt(fin.data.totalCollected);
+          document.getElementById('finOutstanding').textContent = 'GHS ' + fmt(Math.max(0, fin.data.outstanding));
+          document.getElementById('finOverdue').textContent    = 'GHS ' + fmt(fin.data.overdueAmount);
+        }
+      }
+
+      // Audit log
+      loadAuditLog();
     }
 
     els.search.addEventListener('input', renderFiltered);
@@ -779,12 +1007,20 @@ if (empty($_SESSION['admin_logged_in'])) {
         if (!data.success) throw new Error(data.message);
 
         const loan = data.loan;
+        const lateRow = data.lateFee > 0
+          ? `<div><div class="kv-label">Late Fee (${data.monthsOverdue} mo × 5%)</div>
+             <div class="kv-value" style="color:var(--danger)">GHS ${fmt(data.lateFee)}</div></div>
+             <div><div class="kv-label">Total Now Due</div>
+             <div class="kv-value" style="color:var(--danger);font-size:1rem">GHS ${fmt(data.outstanding + data.lateFee)}</div></div>`
+          : '';
         repSummary.innerHTML = `
           <div><div class="kv-label">Applicant</div><div class="kv-value">${escapeHTML(loan.full_name)}</div></div>
           <div><div class="kv-label">Loan Type</div><div class="kv-value">${escapeHTML(loan.loan_type)}</div></div>
-          <div><div class="kv-label">Loan Amount</div><div class="kv-value">GHS ${fmt(loan.amount)}</div></div>
-          <div><div class="kv-label">Total Paid</div><div class="kv-value" style="color:var(--primary)">GHS ${fmt(data.totalPaid)}</div></div>
-          <div><div class="kv-label">Outstanding</div><div class="kv-value" style="color:${data.outstanding>0?'var(--danger)':'var(--primary)'}">GHS ${fmt(Math.max(0,data.outstanding))}</div></div>
+          <div><div class="kv-label">Principal</div><div class="kv-value">GHS ${fmt(loan.amount)}</div></div>
+          <div><div class="kv-label">Total Repayable (incl. 20%)</div><div class="kv-value">GHS ${fmt(data.totalRepayable)}</div></div>
+          <div><div class="kv-label">Total Paid</div><div class="kv-value" style="color:var(--success)">GHS ${fmt(data.totalPaid)}</div></div>
+          <div><div class="kv-label">Outstanding</div><div class="kv-value" style="color:${data.outstanding>0?'var(--danger)':'var(--success)'}">GHS ${fmt(data.outstanding)}</div></div>
+          ${lateRow}
         `;
 
         if (!data.repayments.length) {
@@ -886,6 +1122,154 @@ if (empty($_SESSION['admin_logged_in'])) {
         notesSaveBtn.disabled = false;
       }
     });
+
+    // ── Dark mode ─────────────────────────────────────────────────────────────
+    const darkBtn = document.getElementById('darkToggleBtn');
+    if (localStorage.getItem('darkMode') === '1') { document.body.classList.add('dark'); darkBtn.textContent = '☀️ Light'; }
+    darkBtn.addEventListener('click', () => {
+      document.body.classList.toggle('dark');
+      const on = document.body.classList.contains('dark');
+      darkBtn.textContent = on ? '☀️ Light' : '🌙 Dark';
+      localStorage.setItem('darkMode', on ? '1' : '0');
+    });
+
+    // ── Bulk selection ────────────────────────────────────────────────────────
+    const bulkBar   = document.getElementById('bulkBar');
+    const bulkCount = document.getElementById('bulkCount');
+
+    document.getElementById('selectAll').addEventListener('change', function () {
+      document.querySelectorAll('.row-checkbox').forEach(cb => { cb.checked = this.checked; });
+      updateBulkBar();
+    });
+
+    function getSelectedIds() {
+      return [...document.querySelectorAll('.row-checkbox:checked')].map(cb => parseInt(cb.dataset.id));
+    }
+
+    function updateBulkBar() {
+      const ids = getSelectedIds();
+      if (ids.length > 0) {
+        bulkBar.classList.add('visible');
+        bulkCount.textContent = ids.length + ' selected';
+      } else {
+        bulkBar.classList.remove('visible');
+      }
+    }
+
+    function clearSelection() {
+      document.querySelectorAll('.row-checkbox').forEach(cb => cb.checked = false);
+      document.getElementById('selectAll').checked = false;
+      bulkBar.classList.remove('visible');
+    }
+
+    async function executeBulk(status) {
+      const ids = getSelectedIds();
+      if (!ids.length) return;
+      const fd = new FormData();
+      fd.append('status', status);
+      fd.append('csrf_token', CSRF_TOKEN);
+      ids.forEach(id => fd.append('ids[]', id));
+      try {
+        const res  = await fetch('api/bulk_status.php', { method: 'POST', body: fd });
+        const data = await res.json();
+        if (data.success) {
+          setStatus(data.message);
+          clearSelection();
+          await loadData();
+        } else {
+          setStatus(data.message, true);
+        }
+      } catch { setStatus('Network error — bulk update failed.', true); }
+    }
+
+    // ── Disbursement modal ────────────────────────────────────────────────────
+    const disburseModal   = document.getElementById('disburseModal');
+    const disburseLoanId  = document.getElementById('disburseLoanId');
+    const disburseMethod  = document.getElementById('disburseMethod');
+    const disburseDueDate = document.getElementById('disburseDueDate');
+    const disburseStatus  = document.getElementById('disburseStatus');
+
+    document.getElementById('disburseClose').addEventListener('click', () => disburseModal.classList.remove('open'));
+    disburseModal.addEventListener('click', e => { if (e.target === disburseModal) disburseModal.classList.remove('open'); });
+
+    function openDisburseModal(loanId) {
+      disburseLoanId.value = loanId;
+      disburseMethod.value  = '';
+      disburseStatus.textContent = '';
+      disburseStatus.className   = 'rep-status';
+      // Default due date = 3 months from today
+      const d = new Date(); d.setMonth(d.getMonth() + 3);
+      disburseDueDate.value = d.toISOString().substring(0, 10);
+      const app = allApplications.find(a => a.id == loanId);
+      document.getElementById('disburseModalTitle').textContent =
+        app ? `Disburse Loan — ${app.fullName} (GHS ${fmt(app.amount)})` : 'Disburse Loan';
+      disburseModal.classList.add('open');
+    }
+
+    document.getElementById('disburseSubmitBtn').addEventListener('click', async () => {
+      const id     = disburseLoanId.value;
+      const method = disburseMethod.value;
+      const due    = disburseDueDate.value;
+      if (!method) { disburseStatus.textContent = 'Select a disbursement method.'; disburseStatus.className = 'rep-status err'; return; }
+      if (!due)    { disburseStatus.textContent = 'Enter a due date.'; disburseStatus.className = 'rep-status err'; return; }
+      document.getElementById('disburseSubmitBtn').disabled = true;
+      try {
+        const fd = new FormData();
+        fd.append('id', id); fd.append('method', method);
+        fd.append('due_date', due); fd.append('csrf_token', CSRF_TOKEN);
+        const res  = await fetch('api/disburse.php', { method: 'POST', body: fd });
+        const data = await res.json();
+        if (data.success) {
+          disburseStatus.textContent = data.message;
+          disburseStatus.className   = 'rep-status ok';
+          setTimeout(() => { disburseModal.classList.remove('open'); loadData(); }, 1200);
+        } else {
+          disburseStatus.textContent = data.message;
+          disburseStatus.className   = 'rep-status err';
+        }
+      } catch { disburseStatus.textContent = 'Network error.'; disburseStatus.className = 'rep-status err'; }
+      finally  { document.getElementById('disburseSubmitBtn').disabled = false; }
+    });
+
+    // ── Send reminders ────────────────────────────────────────────────────────
+    document.getElementById('sendRemindersBtn').addEventListener('click', async () => {
+      const btn = document.getElementById('sendRemindersBtn');
+      btn.disabled = true; btn.textContent = '📧 Sending…';
+      try {
+        const fd = new FormData(); fd.append('csrf_token', CSRF_TOKEN);
+        const res  = await fetch('api/send_reminders.php', { method: 'POST', body: fd });
+        const data = await res.json();
+        setStatus(data.message, !data.success);
+        loadAuditLog();
+      } catch { setStatus('Network error — reminders failed.', true); }
+      finally  { btn.disabled = false; btn.textContent = '📧 Send Reminders'; }
+    });
+
+    // ── Audit log ─────────────────────────────────────────────────────────────
+    async function loadAuditLog() {
+      try {
+        const res  = await fetch('api/get_audit_log.php?limit=50');
+        const data = await res.json();
+        const listEl = document.getElementById('auditList');
+        if (!data.success || !data.logs.length) {
+          listEl.innerHTML = '<div class="audit-empty">No activity recorded yet.</div>';
+          return;
+        }
+        listEl.innerHTML = data.logs.map(log => `
+          <div class="audit-item">
+            <div>
+              <div class="audit-action">${escapeHTML(log.action)}</div>
+              <div class="audit-detail">${escapeHTML(log.details || '')}</div>
+            </div>
+            <div>
+              ${log.loan_id ? `<div class="audit-loan">Loan #${log.loan_id}</div>` : ''}
+              <div style="font-size:.75rem;color:var(--muted)">${escapeHTML(log.admin_user || 'system')}</div>
+            </div>
+            <div class="audit-time">${escapeHTML(log.createdAt)}</div>
+          </div>
+        `).join('');
+      } catch {}
+    }
 
     // ── Init ──────────────────────────────────────────────────────────────────
     loadData().catch(err => {

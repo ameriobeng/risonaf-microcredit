@@ -131,6 +131,10 @@
     .policy-agree input[type="checkbox"] { width: 17px; height: 17px; accent-color: var(--navy); flex-shrink: 0; margin-top: 2px; cursor: pointer; }
     .policy-agree label { font-size: .87rem; color: var(--text); line-height: 1.55; cursor: pointer; }
     .policy-agree label a { color: var(--navy); font-weight: 600; text-decoration: underline; }
+    .upload-field label { display: block; font-size: .84rem; font-weight: 600; color: var(--text); margin-bottom: .38rem; }
+    .upload-field label span { font-weight: 400; color: var(--muted); font-size: .8rem; }
+    .upload-field input[type="file"] { width: 100%; padding: .6rem .85rem; border: 1.5px dashed #cdd4df; border-radius: 8px; font: inherit; font-size: .88rem; background: var(--light); color: var(--text); cursor: pointer; }
+    .upload-field input[type="file"]:focus { border-color: var(--navy); outline: none; }
 
     /* ── SUBMISSIONS ── */
     .submissions-section { margin-top: 1.6rem; padding-top: 1.3rem; border-top: 1px solid var(--border); }
@@ -307,7 +311,7 @@
             </div>
             <div class="calc-field">
               <label for="calcAmount">Loan Amount (GHS)</label>
-              <input id="calcAmount" type="number" min="100" max="100000" placeholder="e.g. 5,000" value="5000" />
+              <input id="calcAmount" type="number" min="1000" max="2000" placeholder="GHS 1,000 – 2,000" value="2000" />
             </div>
             <div class="calc-field">
               <label for="calcTerm">Repayment Period</label>
@@ -382,7 +386,7 @@
             </div>
           </div>
 
-          <form id="loanForm">
+          <form id="loanForm" enctype="multipart/form-data">
             <div class="row">
               <div class="field">
                 <label for="fullName">Full Name</label>
@@ -437,14 +441,19 @@
               </div>
               <div class="field">
                 <label for="amount">Amount Requested (GHS)</label>
-                <input id="amount" name="amount" type="number" min="100" max="100000"
-                       placeholder="GHS 100 – 100,000" required />
+                <input id="amount" name="amount" type="number" min="1000" max="2000"
+                       placeholder="GHS 1,000 – 2,000" required />
               </div>
             </div>
 
             <div class="field">
               <label for="purpose">Purpose of Loan</label>
               <textarea id="purpose" name="purpose" placeholder="Briefly describe how you plan to use this loan…" required></textarea>
+            </div>
+
+            <div class="field upload-field">
+              <label for="idDocument">Ghana ID Document <span>(Optional — JPG, PNG or PDF, max 3MB)</span></label>
+              <input id="idDocument" name="idDocument" type="file" accept=".jpg,.jpeg,.png,.pdf" />
             </div>
 
             <div class="policy-agree">
@@ -551,7 +560,7 @@
       const feeRate = parseFloat(document.getElementById('calcProcFee').value) || 5;   // processing fee %
 
       const blank = ['calcMonthly','calcPrincipal','calcFee','calcDisbursed','calcInterest','calcTotal'];
-      if (amount < 100) { blank.forEach(id => { document.getElementById(id).textContent = '—'; }); return; }
+      if (amount < 1000) { blank.forEach(id => { document.getElementById(id).textContent = '—'; }); return; }
 
       const procFee  = amount * (feeRate / 100);          // 5% of principal, paid upfront
       const disbursed = amount - procFee;                 // what borrower actually receives
@@ -573,7 +582,7 @@
 
     document.getElementById('applyCalcBtn').addEventListener('click', () => {
       const amount = parseFloat(document.getElementById('calcAmount').value);
-      if (amount >= 100) document.getElementById('amount').value = amount;
+      if (amount >= 1000) document.getElementById('amount').value = amount;
       document.getElementById('apply').scrollIntoView({ behavior: 'smooth' });
     });
 

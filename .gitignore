@@ -28,3 +28,14 @@ Thumbs.db
 # PHP cache
 *.cache
 /cache/
+
+# Node (used only for one-off doc generation)
+package-lock.json
+node_modules/
+
+# Uploaded applicant documents (contain PII — served via authenticated endpoint)
+/uploads/*
+!/uploads/.htaccess
+
+# Diagnostic / dev tools (not for production)
+api/test_email.php

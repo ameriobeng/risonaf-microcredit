@@ -86,16 +86,23 @@ if (!in_array($loanType, $allowedLoanTypes, true)) {
     exit;
 }
 
-// ── Amount: GHS 100 – 100,000 ─────────────────────────────────────────────────
-$amount = (float)$amountRaw;
-if ($amount < 100) {
+// ── Policy consent ────────────────────────────────────────────────────────────
+if (empty($_POST['policyAgree'])) {
     http_response_code(422);
-    echo json_encode(['success' => false, 'message' => 'Minimum loan amount is GHS 100']);
+    echo json_encode(['success' => false, 'message' => 'You must agree to the Loan Policy before submitting']);
     exit;
 }
-if ($amount > 100000) {
+
+// ── Amount: GHS 1,000 – 2,000 ────────────────────────────────────────────────
+$amount = (float)$amountRaw;
+if ($amount < 1000) {
     http_response_code(422);
-    echo json_encode(['success' => false, 'message' => 'Maximum loan amount is GHS 100,000']);
+    echo json_encode(['success' => false, 'message' => 'Minimum loan amount is GHS 1,000']);
+    exit;
+}
+if ($amount > 2000) {
+    http_response_code(422);
+    echo json_encode(['success' => false, 'message' => 'Maximum loan amount is GHS 2,000']);
     exit;
 }
 
@@ -120,6 +127,27 @@ try {
     ]);
 
     $newId = (int)$pdo->lastInsertId();
+
+    // ── Document upload (optional) ────────────────────────────────────────────
+    if (!empty($_FILES['idDocument']['name']) && $_FILES['idDocument']['error'] === UPLOAD_ERR_OK) {
+        $allowedMimes = ['image/jpeg', 'image/png', 'application/pdf'];
+        $maxSize      = 3 * 1024 * 1024; // 3 MB
+        $fileSize     = $_FILES['idDocument']['size'];
+        $fileMime     = mime_content_type($_FILES['idDocument']['tmp_name']);
+        $origExt      = strtolower(pathinfo($_FILES['idDocument']['name'], PATHINFO_EXTENSION));
+        $allowedExts  = ['jpg', 'jpeg', 'png', 'pdf'];
+
+        if (in_array($fileMime, $allowedMimes, true) && in_array($origExt, $allowedExts, true) && $fileSize <= $maxSize) {
+            $uploadDir = __DIR__ . '/../uploads/';
+            if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
+            $filename = $newId . '_id_' . bin2hex(random_bytes(6)) . '.' . $origExt;
+            if (move_uploaded_file($_FILES['idDocument']['tmp_name'], $uploadDir . $filename)) {
+                $pdo->prepare('UPDATE loan_applications SET id_document = ? WHERE id = ?')
+                    ->execute([$filename, $newId]);
+            }
+        }
+        // Silently skip invalid uploads — don't fail the whole submission
+    }
 
     // Record this submission for rate limiting
     try {

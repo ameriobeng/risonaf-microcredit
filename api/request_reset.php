@@ -33,6 +33,17 @@ if ($adminEmail === '' || $adminEmail !== $email) {
 try {
     $pdo = getPDO();
 
+    // Ensure table exists (migration may not have run on the live server)
+    $pdo->exec("
+        CREATE TABLE IF NOT EXISTS password_resets (
+            id         INT AUTO_INCREMENT PRIMARY KEY,
+            token      VARCHAR(64) NOT NULL UNIQUE,
+            used       TINYINT NOT NULL DEFAULT 0,
+            created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            INDEX idx_token (token)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+    ");
+
     // Remove expired tokens
     $pdo->exec('DELETE FROM password_resets WHERE created_at < DATE_SUB(NOW(), INTERVAL 2 HOUR)');
 

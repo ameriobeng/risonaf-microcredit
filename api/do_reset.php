@@ -49,16 +49,16 @@ try {
         exit;
     }
 
-    // Mark token used before writing to disk to prevent race conditions
-    $pdo->prepare('UPDATE password_resets SET used = 1 WHERE id = ?')->execute([$row['id']]);
-
     $newHash    = password_hash($new, PASSWORD_BCRYPT, ['cost' => 12]);
     $configPath = __DIR__ . '/../config.php';
     $configText = file_get_contents($configPath);
 
-    $updated = preg_replace(
+    // Use preg_replace_callback so the bcrypt hash (which contains $2y$12$...)
+    // is treated as a literal string — preg_replace replacement strings interpret
+    // $1, $2 etc. as backreferences, which would silently corrupt the hash.
+    $updated = preg_replace_callback(
         "/const ADMIN_PASSWORD_HASH\s*=\s*'[^']*';/",
-        "const ADMIN_PASSWORD_HASH = '" . $newHash . "';",
+        fn($m) => "const ADMIN_PASSWORD_HASH = '" . $newHash . "';",
         $configText
     );
 
@@ -73,6 +73,10 @@ try {
         echo json_encode(['success' => false, 'message' => 'Failed to write config file — check server permissions']);
         exit;
     }
+
+    // Mark token used only after the file write succeeds — if we burned it first
+    // and the write failed, the admin would be locked out with no way to retry.
+    $pdo->prepare('UPDATE password_resets SET used = 1 WHERE id = ?')->execute([$row['id']]);
 
     echo json_encode(['success' => true, 'message' => 'Password updated. Redirecting to sign in…']);
 } catch (Throwable $e) {

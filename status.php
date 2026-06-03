@@ -80,6 +80,24 @@
     .status-pill.Rejected { background: var(--danger-bg);  color: var(--danger); }
     .status-dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; opacity: .7; }
 
+    /* ── SCHEDULE ── */
+    .schedule-section { padding: 1rem 1.2rem; border-top: 1px solid var(--border); }
+    .schedule-title { font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .6px; color: var(--muted); margin-bottom: .7rem; }
+    .schedule-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: .6rem; margin-bottom: .6rem; }
+    .sched-card { border: 1px solid var(--border); border-radius: 9px; padding: .65rem .8rem; text-align: center; }
+    .sched-card.paid     { background: var(--success-bg); border-color: #a7d9bc; }
+    .sched-card.overdue  { background: var(--danger-bg);  border-color: #f5c6c6; }
+    .sched-card.upcoming { background: var(--light); }
+    .sched-month  { font-size: .7rem; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: var(--muted); margin-bottom: .25rem; }
+    .sched-amount { font-size: .97rem; font-weight: 800; color: var(--navy); }
+    .sched-date   { font-size: .72rem; color: var(--muted); margin-top: .2rem; }
+    .sched-status { font-size: .7rem; font-weight: 700; margin-top: .3rem; }
+    .sched-card.paid     .sched-status { color: var(--success); }
+    .sched-card.overdue  .sched-status { color: var(--danger); }
+    .sched-card.upcoming .sched-status { color: var(--muted); }
+    .due-info { display: flex; align-items: center; gap: .5rem; font-size: .83rem; color: var(--muted); margin-bottom: .5rem; }
+    .due-info strong { color: var(--text); }
+
     /* ── REPAYMENTS ── */
     .result-repay { padding: 1rem 1.2rem; border-top: 1px solid var(--border); }
     .repay-section-title { font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .6px; color: var(--muted); margin-bottom: .65rem; }
@@ -166,6 +184,12 @@
               <span class="val" id="rDate"></span>
             </div>
           </div>
+          <div class="schedule-section" id="schedSection" style="display:none">
+            <div class="schedule-title">Repayment Schedule</div>
+            <div class="due-info" id="dueInfo"></div>
+            <div class="schedule-grid" id="schedGrid"></div>
+          </div>
+
           <div class="result-repay" id="resultRepay" style="display:none">
             <div class="repay-section-title">Repayment Summary</div>
             <div class="repay-summary">
@@ -212,6 +236,27 @@
         const s = app.status || 'Pending';
         document.getElementById('rStatus').innerHTML = `<span class="status-pill ${s}"><span class="status-dot"></span>${s}</span>`;
 
+        // Repayment schedule
+        const schedEl   = document.getElementById('schedSection');
+        const schedGrid = document.getElementById('schedGrid');
+        const dueInfo   = document.getElementById('dueInfo');
+        if (app.schedule && app.schedule.length > 0) {
+          dueInfo.innerHTML = app.dueDate
+            ? `Due date: <strong>${app.dueDate}</strong>`
+            : '';
+          schedGrid.innerHTML = app.schedule.map(s => `
+            <div class="sched-card ${s.status.toLowerCase()}">
+              <div class="sched-month">${s.month}</div>
+              <div class="sched-amount">${fmt(s.amount)}</div>
+              <div class="sched-date">${s.dueDate}</div>
+              <div class="sched-status">${s.status === 'Paid' ? '✓ Paid' : s.status === 'Overdue' ? '⚠ Overdue' : '○ Upcoming'}</div>
+            </div>
+          `).join('');
+          schedEl.style.display = 'block';
+        } else {
+          schedEl.style.display = 'none';
+        }
+
         // Repayment section
         const repayEl = document.getElementById('resultRepay');
         if (typeof app.totalPaid !== 'undefined') {
@@ -219,7 +264,8 @@
           const outEl = document.getElementById('rOutstanding');
           outEl.textContent = fmt(app.outstanding);
           outEl.className = 'val ' + (app.outstanding > 0 ? 'red' : 'green');
-          const pct = app.amount > 0 ? Math.min(100, Math.round(app.totalPaid / app.amount * 100)) : 0;
+          const totalRepayable = app.amount * 1.20;
+          const pct = totalRepayable > 0 ? Math.min(100, Math.round(app.totalPaid / totalRepayable * 100)) : 0;
           document.getElementById('rProgressBar').style.width = pct + '%';
           document.getElementById('rProgressPct').textContent = pct + '% repaid';
           const histEl = document.getElementById('rRepayHistory');
