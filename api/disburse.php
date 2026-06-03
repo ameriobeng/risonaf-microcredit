@@ -6,6 +6,7 @@ require_once __DIR__ . '/auth_check.php';
 header('Content-Type: application/json');
 
 require_once __DIR__ . '/../config.php';
+require_once __DIR__ . '/../helpers/mailer.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
@@ -55,11 +56,39 @@ try {
         exit;
     }
 
+    // Fetch full applicant details for the email
+    $fullStmt = $pdo->prepare('SELECT full_name, email, loan_type, amount FROM loan_applications WHERE id = ?');
+    $fullStmt->execute([$id]);
+    $full = $fullStmt->fetch();
+
     $pdo->prepare(
         "UPDATE loan_applications
          SET status = 'Disbursed', disbursed_at = NOW(), due_date = ?, disbursement_method = ?
          WHERE id = ?"
     )->execute([$dueDate, $method, $id]);
+
+    // Email applicant
+    if (!empty($full['email'])) {
+        $amount   = number_format((float)$full['amount'], 2);
+        $monthly  = number_format((float)$full['amount'] * 1.20 / 3, 2);
+        $body = "Dear {$full['full_name']},\n\n"
+              . "Great news! Your loan has been disbursed.\n\n"
+              . "Loan Details\n"
+              . "------------\n"
+              . "Reference:    #{$id}\n"
+              . "Loan Type:    {$full['loan_type']}\n"
+              . "Amount:       GHS {$amount}\n"
+              . "Method:       {$method}\n"
+              . "Due Date:     {$dueDate}\n\n"
+              . "Repayment Schedule\n"
+              . "------------------\n"
+              . "Monthly Payment: GHS {$monthly} (3 equal instalments)\n"
+              . "Final Due Date:  {$dueDate}\n\n"
+              . "Please ensure timely repayment to avoid a 5% per month late repayment fee.\n\n"
+              . "Track your application status on our website at any time.\n\n"
+              . "— The Risonaf Loans Team";
+        sendMail($full['email'], "Loan Disbursed — Reference #{$id}", $body);
+    }
 
     // Audit log
     try {

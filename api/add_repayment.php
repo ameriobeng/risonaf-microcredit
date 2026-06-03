@@ -6,6 +6,7 @@ require_once __DIR__ . '/auth_check.php';
 header('Content-Type: application/json');
 
 require_once __DIR__ . '/../config.php';
+require_once __DIR__ . '/../helpers/mailer.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
@@ -90,6 +91,27 @@ try {
             if ($newStatus !== $loanRow['status']) {
                 $pdo->prepare('UPDATE loan_applications SET status = ? WHERE id = ?')
                     ->execute([$newStatus, $loanId]);
+
+                // Email applicant on completion
+                if ($newStatus === 'Completed') {
+                    $emailStmt = $pdo->prepare('SELECT full_name, email, loan_type, amount FROM loan_applications WHERE id = ?');
+                    $emailStmt->execute([$loanId]);
+                    $emailRow = $emailStmt->fetch();
+                    if ($emailRow && !empty($emailRow['email'])) {
+                        $amt  = number_format((float)$emailRow['amount'], 2);
+                        $body = "Dear {$emailRow['full_name']},\n\n"
+                              . "Congratulations! Your loan has been fully repaid.\n\n"
+                              . "Loan Details\n"
+                              . "------------\n"
+                              . "Reference:  #{$loanId}\n"
+                              . "Loan Type:  {$emailRow['loan_type']}\n"
+                              . "Amount:     GHS {$amt}\n"
+                              . "Status:     Completed\n\n"
+                              . "Thank you for your prompt repayments. We look forward to serving you again.\n\n"
+                              . "— The Risonaf Loans Team";
+                        sendMail($emailRow['email'], "Loan Fully Repaid — Reference #{$loanId}", $body);
+                    }
+                }
             }
         }
     } catch (Throwable) {}
