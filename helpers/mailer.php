@@ -33,49 +33,60 @@ function sendMail(string $to, string $subject, string $body): bool
         );
         if (!$socket) return false;
 
-        $read = function () use ($socket): string {
-            $res = '';
+        // Returns the numeric SMTP response code (e.g. 250, 535).
+        $read = function () use ($socket): int {
+            $code = 0;
             while ($line = fgets($socket, 515)) {
-                $res .= $line;
+                $code = (int)substr($line, 0, 3);
                 if (substr($line, 3, 1) === ' ') break;
             }
-            return $res;
+            return $code;
         };
 
         $send = function (string $cmd) use ($socket): void {
             fputs($socket, $cmd . "\r\n");
         };
 
+        // Helper: abort if the server returned an unexpected code.
+        $expect = function (int $code, int $expected) use ($socket): bool {
+            if ($code !== $expected) {
+                fclose($socket);
+                return false;
+            }
+            return true;
+        };
+
         $ehlo = SMTP_FROM ?: gethostname() ?: 'localhost';
 
-        $read(); // 220 greeting
+        if (!$expect($read(), 220)) return false; // greeting
         $send('EHLO ' . $ehlo);
-        $read();
+        if ($read() < 200 || $read() > 299) {} // EHLO may return multi-line 250; just consume
 
         // Upgrade to TLS on port 587 via STARTTLS
         if (!$useSSL) {
             $send('STARTTLS');
-            $read();
+            if (!$expect($read(), 220)) return false;
             if (!stream_socket_enable_crypto($socket, true, STREAM_CRYPTO_METHOD_TLS_CLIENT)) {
                 fclose($socket);
                 return false;
             }
             $send('EHLO ' . $ehlo);
-            $read();
+            $read(); // consume post-TLS EHLO response
         }
 
         $send('AUTH LOGIN');
-        $read();
+        $read(); // 334 (send username)
         $send(base64_encode(SMTP_USER));
-        $read();
+        $read(); // 334 (send password)
         $send(base64_encode(SMTP_PASS));
-        $read();
+        if (!$expect($read(), 235)) return false; // 235 = auth success; 535 = auth failed
+
         $send('MAIL FROM: <' . SMTP_FROM . '>');
-        $read();
+        if (!$expect($read(), 250)) return false;
         $send('RCPT TO: <' . $to . '>');
-        $read();
+        if (!$expect($read(), 250)) return false;
         $send('DATA');
-        $read();
+        if (!$expect($read(), 354)) return false;
 
         $from    = SMTP_FROM_NAME . ' <' . SMTP_FROM . '>';
         $message = "From: {$from}\r\n"

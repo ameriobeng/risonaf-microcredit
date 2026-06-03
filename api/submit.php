@@ -86,16 +86,23 @@ if (!in_array($loanType, $allowedLoanTypes, true)) {
     exit;
 }
 
-// ── Amount: GHS 100 – 100,000 ─────────────────────────────────────────────────
-$amount = (float)$amountRaw;
-if ($amount < 100) {
+// ── Policy consent ────────────────────────────────────────────────────────────
+if (empty($_POST['policyAgree'])) {
     http_response_code(422);
-    echo json_encode(['success' => false, 'message' => 'Minimum loan amount is GHS 100']);
+    echo json_encode(['success' => false, 'message' => 'You must agree to the Loan Policy before submitting']);
     exit;
 }
-if ($amount > 100000) {
+
+// ── Amount: GHS 1,000 – 2,000 ────────────────────────────────────────────────
+$amount = (float)$amountRaw;
+if ($amount < 1000) {
     http_response_code(422);
-    echo json_encode(['success' => false, 'message' => 'Maximum loan amount is GHS 100,000']);
+    echo json_encode(['success' => false, 'message' => 'Minimum loan amount is GHS 1,000']);
+    exit;
+}
+if ($amount > 2000) {
+    http_response_code(422);
+    echo json_encode(['success' => false, 'message' => 'Maximum loan amount is GHS 2,000']);
     exit;
 }
 

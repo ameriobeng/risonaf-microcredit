@@ -45,9 +45,12 @@ $newHash     = password_hash($new, PASSWORD_BCRYPT, ['cost' => 12]);
 $configPath  = __DIR__ . '/../config.php';
 $configText  = file_get_contents($configPath);
 
-$updated = preg_replace(
+// Use preg_replace_callback so the bcrypt hash (which contains $2y$12$...)
+// is treated as a literal string — preg_replace replacement strings interpret
+// $1, $2 etc. as backreferences, which would silently corrupt the hash.
+$updated = preg_replace_callback(
     "/const ADMIN_PASSWORD_HASH\s*=\s*'[^']*';/",
-    "const ADMIN_PASSWORD_HASH = '" . $newHash . "';",
+    fn($m) => "const ADMIN_PASSWORD_HASH = '" . $newHash . "';",
     $configText
 );
 
