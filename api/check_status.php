@@ -29,20 +29,28 @@ if (!preg_match('/^(0\d{9}|\+233\d{9})$/', $phone)) {
 
 try {
     $pdo  = getPDO();
+    // Build SELECT safely — lifecycle columns may not exist on older installs
+    $cols        = $pdo->query("SHOW COLUMNS FROM loan_applications")->fetchAll(PDO::FETCH_COLUMN);
+    $hasDisburse = in_array('disbursed_at', $cols, true);
+    $extraCols   = $hasDisburse
+        ? "DATE_FORMAT(disbursed_at, '%Y-%m-%d') AS disbursedAt,
+           DATE_FORMAT(due_date, '%Y-%m-%d') AS dueDate,
+           disbursement_method AS disbursementMethod,"
+        : "NULL AS disbursedAt, NULL AS dueDate, NULL AS disbursementMethod,";
+
     $stmt = $pdo->prepare(
-        'SELECT id,
+        "SELECT id,
                 full_name AS fullName,
                 loan_type AS loanType,
                 amount,
                 status,
-                DATE_FORMAT(submitted_at, "%Y-%m-%d %H:%i") AS submittedAt,
-                DATE_FORMAT(disbursed_at, "%Y-%m-%d") AS disbursedAt,
-                DATE_FORMAT(due_date, "%Y-%m-%d") AS dueDate,
-                disbursement_method AS disbursementMethod
+                DATE_FORMAT(submitted_at, '%Y-%m-%d %H:%i') AS submittedAt,
+                {$extraCols}
+                1 AS _placeholder
          FROM loan_applications
          WHERE phone = ? AND id_number = ?
          ORDER BY submitted_at DESC
-         LIMIT 1'
+         LIMIT 1"
     );
     $stmt->execute([$phone, $idNumber]);
     $row = $stmt->fetch();

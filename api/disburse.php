@@ -40,6 +40,23 @@ if (!in_array($method, $allowedMethods, true)) {
 try {
     $pdo = getPDO();
 
+    // Auto-add lifecycle columns if the migration hasn't been run on this server
+    $existingCols = $pdo->query("SHOW COLUMNS FROM loan_applications")->fetchAll(PDO::FETCH_COLUMN);
+    $colsToAdd = [
+        'disbursed_at'        => "ALTER TABLE loan_applications ADD COLUMN disbursed_at DATETIME DEFAULT NULL",
+        'due_date'            => "ALTER TABLE loan_applications ADD COLUMN due_date DATE DEFAULT NULL",
+        'disbursement_method' => "ALTER TABLE loan_applications ADD COLUMN disbursement_method VARCHAR(100) DEFAULT NULL",
+        'id_document'         => "ALTER TABLE loan_applications ADD COLUMN id_document VARCHAR(255) DEFAULT NULL",
+    ];
+    foreach ($colsToAdd as $col => $sql) {
+        if (!in_array($col, $existingCols, true)) $pdo->exec($sql);
+    }
+
+    // Extend status ENUM to include lifecycle values if not already extended
+    $pdo->exec("ALTER TABLE loan_applications MODIFY COLUMN status
+        ENUM('Pending','Approved','Rejected','Disbursed','Repaying','Completed','Defaulted')
+        NOT NULL DEFAULT 'Pending'");
+
     $stmt = $pdo->prepare('SELECT id, full_name, status FROM loan_applications WHERE id = ?');
     $stmt->execute([$id]);
     $loan = $stmt->fetch();
