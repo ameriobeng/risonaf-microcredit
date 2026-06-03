@@ -4,26 +4,25 @@ declare(strict_types=1);
 /**
  * Sends a plain-text email via SMTP (fsockopen) or PHP mail().
  * Configure SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS in config.php.
+ *
+ * Port 465 = direct SSL (SMTPS).
+ * Port 587 = plain connect then STARTTLS — used by Gmail.
  */
 function sendMail(string $to, string $subject, string $body): bool
 {
-    if ($to === '') {
-        return false;
-    }
+    if ($to === '') return false;
 
-    // Strip newlines from header fields to prevent SMTP header injection
+    // Strip newlines to prevent SMTP header injection
     $subject = str_replace(["\r", "\n"], ' ', $subject);
     $to      = str_replace(["\r", "\n"], '',  $to);
 
-    // Use PHP mail() if no SMTP host configured
+    // Fall back to PHP mail() if no SMTP host is configured
     if (SMTP_HOST === '') {
         $headers  = "From: " . SMTP_FROM_NAME . " <" . (SMTP_FROM ?: 'noreply@localhost') . ">\r\n";
         $headers .= "Content-Type: text/plain; charset=utf-8\r\n";
         return mail($to, $subject, $body, $headers);
     }
 
-    // SMTP via fsockopen.
-    // Port 465 = direct SSL (SMTPS).  Port 587 = plain connect then STARTTLS.
     try {
         $useSSL = (SMTP_PORT === 465);
         $socket = fsockopen(
@@ -33,12 +32,17 @@ function sendMail(string $to, string $subject, string $body): bool
         );
         if (!$socket) return false;
 
-        // Returns the numeric SMTP response code (e.g. 250, 535).
+        stream_set_timeout($socket, 10); // cap each individual read at 10 s
+
+        /**
+         * Read one complete SMTP response (handles multi-line like EHLO 250-...).
+         * Returns the 3-digit numeric code from the final line.
+         */
         $read = function () use ($socket): int {
             $code = 0;
             while ($line = fgets($socket, 515)) {
                 $code = (int)substr($line, 0, 3);
-                if (substr($line, 3, 1) === ' ') break;
+                if (substr($line, 3, 1) === ' ') break; // space = last line of response
             }
             return $code;
         };
@@ -47,46 +51,50 @@ function sendMail(string $to, string $subject, string $body): bool
             fputs($socket, $cmd . "\r\n");
         };
 
-        // Helper: abort if the server returned an unexpected code.
-        $expect = function (int $code, int $expected) use ($socket): bool {
-            if ($code !== $expected) {
-                fclose($socket);
-                return false;
-            }
-            return true;
-        };
+        $ehlo = SMTP_FROM ?: (gethostname() ?: 'localhost');
 
-        $ehlo = SMTP_FROM ?: gethostname() ?: 'localhost';
+        // --- Greeting ---
+        if ($read() !== 220) { fclose($socket); return false; }
 
-        if (!$expect($read(), 220)) return false; // greeting
+        // --- EHLO ---
         $send('EHLO ' . $ehlo);
-        if ($read() < 200 || $read() > 299) {} // EHLO may return multi-line 250; just consume
+        if ($read() !== 250) { fclose($socket); return false; }
 
-        // Upgrade to TLS on port 587 via STARTTLS
+        // --- STARTTLS (port 587 only) ---
         if (!$useSSL) {
             $send('STARTTLS');
-            if (!$expect($read(), 220)) return false;
+            if ($read() !== 220) { fclose($socket); return false; }
+
             if (!stream_socket_enable_crypto($socket, true, STREAM_CRYPTO_METHOD_TLS_CLIENT)) {
-                fclose($socket);
-                return false;
+                fclose($socket); return false;
             }
+
+            // Re-introduce after TLS upgrade
             $send('EHLO ' . $ehlo);
-            $read(); // consume post-TLS EHLO response
+            if ($read() !== 250) { fclose($socket); return false; }
         }
 
+        // --- AUTH LOGIN ---
         $send('AUTH LOGIN');
-        $read(); // 334 (send username)
-        $send(base64_encode(SMTP_USER));
-        $read(); // 334 (send password)
-        $send(base64_encode(SMTP_PASS));
-        if (!$expect($read(), 235)) return false; // 235 = auth success; 535 = auth failed
+        if ($read() !== 334) { fclose($socket); return false; } // "Username:"
 
+        $send(base64_encode(SMTP_USER));
+        if ($read() !== 334) { fclose($socket); return false; } // "Password:"
+
+        // Remove spaces from app password (Google displays them in groups of 4)
+        $send(base64_encode(str_replace(' ', '', SMTP_PASS)));
+        if ($read() !== 235) { fclose($socket); return false; } // 235 = authenticated
+
+        // --- Envelope ---
         $send('MAIL FROM: <' . SMTP_FROM . '>');
-        if (!$expect($read(), 250)) return false;
+        if ($read() !== 250) { fclose($socket); return false; }
+
         $send('RCPT TO: <' . $to . '>');
-        if (!$expect($read(), 250)) return false;
+        if ($read() !== 250) { fclose($socket); return false; }
+
+        // --- Body ---
         $send('DATA');
-        if (!$expect($read(), 354)) return false;
+        if ($read() !== 354) { fclose($socket); return false; }
 
         $from    = SMTP_FROM_NAME . ' <' . SMTP_FROM . '>';
         $message = "From: {$from}\r\n"
@@ -98,10 +106,11 @@ function sendMail(string $to, string $subject, string $body): bool
                  . $body . "\r\n.\r\n";
 
         fputs($socket, $message);
-        $read();
+        $read(); // 250 queued
         $send('QUIT');
         fclose($socket);
         return true;
+
     } catch (Throwable $e) {
         return false;
     }
