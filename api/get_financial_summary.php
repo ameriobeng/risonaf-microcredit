@@ -87,7 +87,7 @@ try {
     ]);
 } catch (Throwable $e) {
     // If even the basic portfolio query fails, return zeroes rather than a 500
-    // so the admin dashboard still loads
-    $empty['_error'] = $e->getMessage(); // visible in network tab for debugging
+    // so the admin dashboard still loads. Log internally but don't expose to client.
+    error_log('[Risonaf] get_financial_summary error: ' . $e->getMessage());
     echo json_encode($empty);
 }
