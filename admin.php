@@ -1007,12 +1007,20 @@ if (empty($_SESSION['admin_logged_in'])) {
         if (!data.success) throw new Error(data.message);
 
         const loan = data.loan;
+        const lateRow = data.lateFee > 0
+          ? `<div><div class="kv-label">Late Fee (${data.monthsOverdue} mo × 5%)</div>
+             <div class="kv-value" style="color:var(--danger)">GHS ${fmt(data.lateFee)}</div></div>
+             <div><div class="kv-label">Total Now Due</div>
+             <div class="kv-value" style="color:var(--danger);font-size:1rem">GHS ${fmt(data.outstanding + data.lateFee)}</div></div>`
+          : '';
         repSummary.innerHTML = `
           <div><div class="kv-label">Applicant</div><div class="kv-value">${escapeHTML(loan.full_name)}</div></div>
           <div><div class="kv-label">Loan Type</div><div class="kv-value">${escapeHTML(loan.loan_type)}</div></div>
-          <div><div class="kv-label">Loan Amount</div><div class="kv-value">GHS ${fmt(loan.amount)}</div></div>
-          <div><div class="kv-label">Total Paid</div><div class="kv-value" style="color:var(--primary)">GHS ${fmt(data.totalPaid)}</div></div>
-          <div><div class="kv-label">Outstanding</div><div class="kv-value" style="color:${data.outstanding>0?'var(--danger)':'var(--primary)'}">GHS ${fmt(Math.max(0,data.outstanding))}</div></div>
+          <div><div class="kv-label">Principal</div><div class="kv-value">GHS ${fmt(loan.amount)}</div></div>
+          <div><div class="kv-label">Total Repayable (incl. 20%)</div><div class="kv-value">GHS ${fmt(data.totalRepayable)}</div></div>
+          <div><div class="kv-label">Total Paid</div><div class="kv-value" style="color:var(--success)">GHS ${fmt(data.totalPaid)}</div></div>
+          <div><div class="kv-label">Outstanding</div><div class="kv-value" style="color:${data.outstanding>0?'var(--danger)':'var(--success)'}">GHS ${fmt(data.outstanding)}</div></div>
+          ${lateRow}
         `;
 
         if (!data.repayments.length) {
